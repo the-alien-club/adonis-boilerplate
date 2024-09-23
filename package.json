@@ -1,5 +1,6 @@
 {
     "name": "adonis-boilerplate",
+    "productName": "AdonisJS Boilerplate",
     "version": "2024.9.1-alpha",
     "description": "An AdonisJS boilerplate that integrates a role system, token scopes, cron jobs and more!",
     "private": true,
