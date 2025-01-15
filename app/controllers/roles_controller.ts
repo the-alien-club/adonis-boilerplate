@@ -61,7 +61,8 @@ export default class RolesController extends BaseController {
 
         const { name, description } = await request.validateUsing(roleCreationValidator)
 
-        if (name && (await Role.findBy("name", name))) return this.errorResponse(EC_ROLE_ALREADY_EXISTS)
+        // Non-isolated
+        if (await Role.findBy("name", name)) return this.errorResponse(EC_ROLE_ALREADY_EXISTS)
 
         const role = await Role.create({ name, description })
         return this.successResponse(role)

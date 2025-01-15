@@ -1,5 +1,7 @@
 import app from "@adonisjs/core/services/app"
 import { HttpContext, ExceptionHandler } from "@adonisjs/core/http"
+import { errors } from "@vinejs/vine"
+import { ErrorCode } from "#config/errors"
 
 export default class HttpExceptionHandler extends ExceptionHandler {
     /**
@@ -10,12 +12,26 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
     /**
      * The method is used for handling errors and returning
-     * response to the client
+     * response to the client.
      */
-    async handle(error: unknown, ctx: HttpContext) {
-        // TODO: Overwrite errors to match Alien standards here
+    async handle(error: any, ctx: HttpContext) {
+        // VineJS Validation Error
+        if (error instanceof errors.E_VALIDATION_ERROR) {
+            const errorCode: ErrorCode = {
+                status: error.status || 500,
+                name: error.code || "UNKNOWN_ERROR",
+                message: error.message || "An unknown error occurred.",
+                data: error.messages,
+            }
 
-        console.log("Error: ", error)
+            const response = {
+                success: false,
+                message: errorCode.message,
+                error: errorCode,
+            }
+
+            return ctx.response.status(errorCode.status).send(response)
+        }
 
         return super.handle(error, ctx)
     }

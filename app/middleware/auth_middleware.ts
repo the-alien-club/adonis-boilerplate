@@ -2,7 +2,6 @@ import type { HttpContext } from "@adonisjs/core/http"
 import type { NextFn } from "@adonisjs/core/types/http"
 import type { Authenticators } from "@adonisjs/auth/types"
 import { EC_INVALID_TOKEN, EC_LOCKED, EC_UNAUTHENTICATED } from "#config/errors"
-import { REDIRECT_TO } from "#lib/constants/db"
 import logger from "@adonisjs/core/services/logger"
 import { userLog } from "#lib/utils/logger"
 
@@ -21,7 +20,7 @@ export default class AuthMiddleware {
         } = {}
     ) {
         try {
-            await ctx.auth.authenticateUsing(options.guards, { loginRoute: REDIRECT_TO })
+            await ctx.auth.authenticateUsing(options.guards, { loginRoute: "/login" })
         } catch (error) {
             return ctx.response.forbidden({
                 success: false,

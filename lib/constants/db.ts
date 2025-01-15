@@ -1,9 +1,4 @@
 /**
- * The path where an authentication verification is redirected to (login route).
- */
-export const REDIRECT_TO = "/login"
-
-/**
  * The minimum length of a username.
  */
 export const MIN_USERNAME_LENGTH = 4

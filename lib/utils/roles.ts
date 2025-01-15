@@ -26,11 +26,13 @@ export async function getUserRoles(user: User) {
 
 /**
  * Check if the user has a specific role.
- * @param user The user.
+ * @param user The user (or null if the user is not authenticated).
  * @param roleName The role name.
  * @returns `true` if the user has the role, `false` otherwise.
  */
-export async function hasRole(user: User, roleName: string) {
+export async function hasRole(user: User | null, roleName: string) {
+    if (!user) return false
+
     const roles = await getUserRoles(user)
     return roles.includes(roleName)
 }

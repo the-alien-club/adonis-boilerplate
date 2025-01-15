@@ -8,34 +8,40 @@ import { TokenAbility } from "#lib/utils/enums"
 
 export default class AbiPolicy extends BasePolicy {
     async before(user: User | null) {
-        if (user) return hasRole(user, "admin")
-    }
+        if (user) {
+            const isAdmin = await hasRole(user, "admin")
+            return isAdmin || undefined
+        }
 
-    index(user: User): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.ROLE_READ)
-    }
-
-    // Admin only
-    adminIndex(_user: User): AuthorizerResponse {
         return false
     }
 
     // Admin only
-    store(_user: User): AuthorizerResponse {
+    index(): AuthorizerResponse {
         return false
     }
 
-    show(user: User, role: Role): AuthorizerResponse {
+    // Admin only
+    adminIndex(_user: User | null): AuthorizerResponse {
+        return false
+    }
+
+    // Admin only
+    store(_user: User | null): AuthorizerResponse {
+        return false
+    }
+
+    show(user: User | null, role: Role): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.ROLE_READ) && hasRole(user, role.name)
     }
 
     // Admin only
-    update(_user: User): AuthorizerResponse {
+    update(_user: User | null): AuthorizerResponse {
         return false
     }
 
     // Admin only
-    destroy(_user: User): AuthorizerResponse {
+    destroy(_user: User | null): AuthorizerResponse {
         return false
     }
 }

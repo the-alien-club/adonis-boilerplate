@@ -7,7 +7,12 @@ import { TokenAbility } from "#lib/utils/enums"
 
 export default class UserPolicy extends BasePolicy {
     async before(user: User | null) {
-        if (user) return hasRole(user, "admin")
+        if (user) {
+            const isAdmin = await hasRole(user, "admin")
+            return isAdmin || undefined
+        }
+
+        return false
     }
 
     index(user: User): AuthorizerResponse {
@@ -24,16 +29,16 @@ export default class UserPolicy extends BasePolicy {
         return false
     }
 
-    show(user: User, fetchedUser: User): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.USER_READ) && user.id === fetchedUser.id
+    show(user: User | null, fetchedUser: User | null): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.USER_READ) && user?.id === fetchedUser?.id
     }
 
-    update(user: User, fetchedUser: User): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user.id === fetchedUser.id
+    update(user: User | null, fetchedUser: User | null): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
     }
 
-    destroy(user: User, fetchedUser: User): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user.id === fetchedUser.id
+    destroy(user: User | null, fetchedUser: User | null): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
     }
 
     // Admin only

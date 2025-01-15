@@ -11,12 +11,15 @@ export const TokenScopeAbilities: Record<TokenScope, TokenAbility[]> = {
 }
 
 /**
- * Check if a user's token has a specific ability.
- * @param user The user to check.
+ * Check if a user's token has a specific ability, returns true for any ability if `*` (unrestricted).
+ * @param user The user to check (null if no user).
  * @param ability The ability to check for.
  * @returns Whether the user has the ability.
  */
-export function userTokenHasAbility(user: User, ability: TokenAbility): boolean {
+export function userTokenHasAbility(user: User | null, ability: TokenAbility): boolean {
+    if (!user || !user.currentAccessToken) return false
+
+    if (user.currentAccessToken.abilities.includes(TokenAbility.UNRESTRICTED)) return true
     return user.currentAccessToken?.abilities.includes(ability) || false
 }
 

@@ -12,6 +12,6 @@ export function formatJson(str: string): string {
  * @param obj The object to serialize.
  * @returns The JSON string.
  */
-export function stringifyWithBigIntSupport(obj: object): any {
+export function stringify(obj: object): any {
     return JSON.stringify(obj, (_, value) => (typeof value === "bigint" ? value.toString() : value))
 }

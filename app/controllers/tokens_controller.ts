@@ -13,9 +13,12 @@ export default class TokensController extends BaseController {
     /**
      * Get all tokens.
      */
-    async index({ bouncer, params }: HttpContext) {
-        const user = await User.find(params.user_id)
-        if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+    async index({ auth, bouncer, params }: HttpContext) {
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
 
         if (await bouncer.with(TokenPolicy).denies("index", user)) {
             return this.errorResponse(EC_UNAUTHORIZED)
@@ -60,27 +63,24 @@ export default class TokensController extends BaseController {
     /**
      * Issue a new token.
      */
-    async store({ bouncer, params, request, auth }: HttpContext) {
-        if (await bouncer.with(TokenPolicy).denies("store")) {
+    async store({ auth, bouncer, request, params }: HttpContext) {
+        const { scope } = request.body() as { scope: TokenScope | undefined }
+
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
+
+        if (await bouncer.with(TokenPolicy).denies("store", user)) {
             return this.errorResponse(EC_UNAUTHORIZED)
         }
 
-        const user = await User.find(params.user_id)
-        if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        // Validate the scope
+        if (scope && !Object.values(TokenScope).includes(scope)) return this.errorResponse(EC_INVALID_TOKEN_SCOPE)
 
-        const queries = request.qs()
-
-        // Recover the token scope from the query string
-        let scope: TokenScope | undefined
-        if (queries.scope) {
-            if (!Object.values(TokenScope).includes(queries.scope)) return this.errorResponse(EC_INVALID_TOKEN_SCOPE)
-            scope = queries.scope as TokenScope
-        }
-
-        // Fallback to unrestricted scope
-        if (!scope) scope = TokenScope.UNRESTRICTED
-
-        const token = await User.tokens.create(user, TokenScopeAbilities[scope], {
+        // Fallback to unrestricted scope in case no specific scope was provided
+        const token = await User.tokens.create(user, TokenScopeAbilities[scope ?? TokenScope.UNRESTRICTED], {
             name:
                 user.id === auth.user?.id
                     ? `Token issued manually (${scope}).`
@@ -102,9 +102,12 @@ export default class TokensController extends BaseController {
     /**
      * Get token by ID.
      */
-    async show({ bouncer, params }: HttpContext) {
-        const user = await User.find(params.user_id)
-        if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+    async show({ auth, bouncer, params }: HttpContext) {
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
 
         const token = await User.tokens.find(user, params.token_id)
         if (!token) return this.errorResponse(EC_USER_NOT_FOUND)
@@ -120,20 +123,23 @@ export default class TokensController extends BaseController {
      * Update (refresh) token by ID.
      */
     async update({ bouncer, params, auth }: HttpContext) {
-        const user = await User.find(params.user_id)
-        if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
 
-        const currentToken = await User.tokens.find(user, params.token_id)
-        if (!currentToken) return this.errorResponse(EC_TOKEN_NOT_FOUND)
+        const currentAccessToken = await User.tokens.find(user, params.token_id)
+        if (!currentAccessToken) return this.errorResponse(EC_TOKEN_NOT_FOUND)
 
-        if (await bouncer.with(TokenPolicy).denies("update", currentToken)) {
+        if (await bouncer.with(TokenPolicy).denies("update", currentAccessToken)) {
             return this.errorResponse(EC_UNAUTHORIZED)
         }
 
-        const scope = recoverTokenScope(currentToken.abilities)
+        const scope = recoverTokenScope(currentAccessToken.abilities)
 
         await User.tokens.delete(user, params.token_id)
-        const token = await User.tokens.create(user, currentToken.abilities, {
+        const token = await User.tokens.create(user, currentAccessToken.abilities, {
             name:
                 user.id === auth.user?.id
                     ? `Token issued manually (${scope} - refreshed).`
@@ -155,9 +161,12 @@ export default class TokensController extends BaseController {
     /**
      * Delete token by ID.
      */
-    async destroy({ bouncer, params }: HttpContext) {
-        const user = await User.find(params.user_id)
-        if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+    async destroy({ auth, bouncer, params }: HttpContext) {
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
 
         const currentAccessToken = await User.tokens.find(user, params.token_id)
         if (!currentAccessToken) return this.errorResponse(EC_TOKEN_NOT_FOUND)

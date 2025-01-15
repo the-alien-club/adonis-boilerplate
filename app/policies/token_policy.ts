@@ -8,11 +8,16 @@ import { TokenAbility } from "#lib/utils/enums"
 
 export default class TokenPolicy extends BasePolicy {
     async before(user: User | null) {
-        if (user) return hasRole(user, "admin")
+        if (user) {
+            const isAdmin = await hasRole(user, "admin")
+            return isAdmin || undefined
+        }
+
+        return false
     }
 
-    index(user: User, userToGetTokensFrom: User): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.TOKEN_READ) && user.id === userToGetTokensFrom.id
+    index(user: User | null, userToGetTokensFrom: User | null): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.TOKEN_READ) && user?.id === userToGetTokensFrom?.id
     }
 
     // Admin only
@@ -20,19 +25,19 @@ export default class TokenPolicy extends BasePolicy {
         return false
     }
 
-    store(user: User): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE)
+    store(user: User | null, userToIssueTokenFrom: User | null): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user?.id === userToIssueTokenFrom?.id
     }
 
-    show(user: User, token: AccessToken): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.TOKEN_READ) && user.id === token.tokenableId
+    show(user: User | null, token: AccessToken): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.TOKEN_READ) && user?.id === token.tokenableId
     }
 
-    update(user: User, token: AccessToken): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user.id === token.tokenableId
+    update(user: User | null, token: AccessToken): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user?.id === token.tokenableId
     }
 
-    destroy(user: User, token: AccessToken): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user.id === token.tokenableId
+    destroy(user: User | null, token: AccessToken): AuthorizerResponse {
+        return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user?.id === token.tokenableId
     }
 }

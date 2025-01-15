@@ -29,6 +29,7 @@ export default class AuthController extends BaseController {
             description: description || null,
         }
 
+        // Non-isolated
         // Both email and username are unique, so we need to check if the user already exists.
         if (email && (await User.findBy("email", email))) return this.errorResponse(EC_EMAIL_ALREADY_EXISTS)
         if (username && (await User.findBy("username", username))) return this.errorResponse(EC_USERNAME_ALREADY_EXISTS)
