@@ -4,3 +4,19 @@
   <h2 align="center">@the-alien-club/adonis-boilerplate</h2>
   <p align="center">An AdonisJS and Lucid boilerplate integrating a role system, token scopes and more!</p>
 </p>
+
+Installation
+------------
+1. Clone the repository
+2. Install dependencies
+    ```typescript
+    $ npm install // yarn
+    ```
+3. Start the development server
+    ```typescript
+    $ npm run dev // yarn dev
+    ```
+
+Dev notes
+---------
+*N/A*
