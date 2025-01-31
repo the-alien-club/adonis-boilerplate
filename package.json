@@ -3,11 +3,18 @@
     "productName": "AdonisJS Boilerplate",
     "version": "2025.1.1-alpha",
     "description": "An AdonisJS boilerplate that integrates a role system, token scopes, cron jobs and more!",
-    "repository": "https://github.com/the-alien-club/adonis-boilerplate",
     "author": "Alien <contact@alien.club> (https://www.alien.club/)",
     "license": "MIT",
     "private": true,
     "type": "module",
+    "homepage": "https://github.com/the-alien-club/adonis-boilerplate",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/the-alien-club/adonis-boilerplate.git"
+    },
+    "bugs": {
+        "url": "https://github.com/the-alien-club/adonis-boilerplate/issues"
+    },
     "scripts": {
         "migration:fresh": "cross-env NO_LC=true node ace migration:refresh --seed",
         "migration:run": "cross-env NO_LC=true node ace migration:run",
