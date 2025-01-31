@@ -20,7 +20,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "check-types": "tsc --noEmit"
+        "check-types": "tsc --noEmit",
+        "knip": "knip"
     },
     "imports": {
         "#config/*": "./config/*.js",
@@ -49,6 +50,7 @@
         "adonis-autoswagger": "^3.64.0",
         "bullmq": "^5.34.10",
         "dedent-js": "^1.0.1",
+        "knip": "^5.43.6",
         "luxon": "^3.5.0",
         "pg": "^8.13.1",
         "reflect-metadata": "^0.2.2",
