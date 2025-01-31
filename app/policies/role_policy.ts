@@ -4,7 +4,7 @@ import { hasRole } from "#lib/utils/roles"
 import { BasePolicy } from "@adonisjs/bouncer"
 import { userTokenHasAbility } from "#lib/utils/tokens"
 import Role from "#models/role"
-import { TokenAbility } from "#lib/utils/enums"
+import { TokenAbility } from "#lib/constants/enums"
 
 export default class AbiPolicy extends BasePolicy {
     async before(user: User | null) {

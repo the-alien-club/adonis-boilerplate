@@ -1,4 +1,4 @@
-import { TokenAbility, TokenScope } from "#lib/utils/enums"
+import { TokenAbility, TokenScope } from "#lib/constants/enums"
 import User from "#models/user"
 
 /**

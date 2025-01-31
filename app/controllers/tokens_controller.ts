@@ -1,6 +1,6 @@
 import { EC_INVALID_TOKEN_SCOPE, EC_TOKEN_NOT_FOUND, EC_UNAUTHORIZED, EC_USER_NOT_FOUND } from "#config/errors"
 import BaseController from "#controllers/templates/base_controller"
-import { TokenScope } from "#lib/utils/enums"
+import { TokenScope } from "#lib/constants/enums"
 import { userLog } from "#lib/utils/logger"
 import { TokenScopeAbilities, recoverTokenScope } from "#lib/utils/tokens"
 import User from "#models/user"
