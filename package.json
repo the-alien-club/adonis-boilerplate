@@ -1,11 +1,13 @@
 {
     "name": "adonis-boilerplate",
     "productName": "AdonisJS Boilerplate",
-    "version": "2024.9.1-alpha",
+    "version": "2025.1.1-alpha",
     "description": "An AdonisJS boilerplate that integrates a role system, token scopes, cron jobs and more!",
+    "repository": "https://github.com/the-alien-club/adonis-boilerplate",
+    "author": "Alien <contact@alien.club>",
+    "license": "MIT",
     "private": true,
     "type": "module",
-    "license": "MIT",
     "scripts": {
         "migration:fresh": "cross-env NO_LC=true node ace migration:refresh --seed",
         "migration:run": "cross-env NO_LC=true node ace migration:run",
