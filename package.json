@@ -4,7 +4,7 @@
     "version": "2025.1.1-alpha",
     "description": "An AdonisJS boilerplate that integrates a role system, token scopes, cron jobs and more!",
     "repository": "https://github.com/the-alien-club/adonis-boilerplate",
-    "author": "Alien <contact@alien.club>",
+    "author": "Alien <contact@alien.club> (https://www.alien.club/)",
     "license": "MIT",
     "private": true,
     "type": "module",
