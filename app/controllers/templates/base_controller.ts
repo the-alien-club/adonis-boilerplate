@@ -7,14 +7,22 @@ export default class BaseController {
     constructor(protected ctx: HttpContext) {}
 
     /**
-     * Returns a properly formatted success response, based on default Alias Studio API response format.
+     * A private function to check data validity.
+     */
+    private _checkDataValidity(data: any) {
+        if (data === undefined || data === null) return false
+        return true
+    }
+
+    /**
+     * Returns a properly formatted success response.
      * @param data Data to be sent in the response (optional).
      * @param meta Metadata to be sent in the response (optional, used for pagination).
      */
     async successResponse(data?: any, meta?: any) {
         let response: any = {
             success: true,
-            data: data || null,
+            data: this._checkDataValidity(data) ? data : null,
         }
 
         // Include meta (on top) only if it exists
@@ -22,7 +30,7 @@ export default class BaseController {
             response = {
                 success: true,
                 meta: meta,
-                data: data || null,
+                data: this._checkDataValidity(data) ? data : null,
             }
         }
 
@@ -31,7 +39,7 @@ export default class BaseController {
 
     /**
      * Returns a properly formatted error response, based on error code constants and
-     * default Alias Studio API response format.
+     * default API response format.
      * @param error Error code constant to be sent in the response.
      * @param data Additional data to be sent in the response (optional).
      * @param message Error message to be sent in the response (optional, defaults to the internal error message).
@@ -40,7 +48,7 @@ export default class BaseController {
         const response: { success: boolean; message: string; error: ErrorCode } = {
             success: false,
             message: message || error.message,
-            error: data !== null ? { ...error, data } : error,
+            error: this._checkDataValidity(data) ? { ...error, data } : error,
         }
 
         this.ctx.response.status(error.status).send(response)
