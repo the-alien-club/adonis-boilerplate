@@ -16,7 +16,7 @@ export default class BaseController {
 
     /**
      * Returns a properly formatted success response.
-     * @param data Data to be sent in the response (optional).
+     * @param data Data to be sent in the response (optional, defaults to `null`).
      * @param meta Metadata to be sent in the response (optional, used for pagination).
      */
     async successResponse(data?: any, meta?: any) {
@@ -38,8 +38,7 @@ export default class BaseController {
     }
 
     /**
-     * Returns a properly formatted error response, based on error code constants and
-     * default API response format.
+     * Returns a properly formatted error response, based on error constants.
      * @param error Error code constant to be sent in the response.
      * @param data Additional data to be sent in the response (optional).
      * @param message Error message to be sent in the response (optional, defaults to the internal error message).
