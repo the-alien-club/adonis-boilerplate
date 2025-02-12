@@ -6,13 +6,15 @@ import { HttpContext } from "@adonisjs/core/http"
 export default class BaseController {
     constructor(protected ctx: HttpContext) {}
 
-    /**
-     * A private function to check data validity.
-     */
-    private _checkDataValidity(data: any) {
-        if (data === undefined || data === null) return false
-        return true
-    }
+	/**
+	 * A private method to check data validity.
+	 * @param data The data to be checked.
+     * @returns Whether the data is valid.
+	 */
+	private _checkDataValidity(data: unknown) {
+		if (data === undefined || data === null) return false
+		return true
+	}
 
     /**
      * Returns a properly formatted success response.
