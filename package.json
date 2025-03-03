@@ -6,6 +6,7 @@
     "author": "Alien <contact@alien.club> (https://www.alien.club/)",
     "license": "MIT",
     "private": true,
+    "packageManager": "yarn@1.22.22",
     "type": "module",
     "homepage": "https://github.com/the-alien-club/adonis-boilerplate",
     "repository": {
@@ -21,16 +22,17 @@
         "db:wipe": "cross-env NO_LC=true node ace db:wipe",
         "db:seed": "cross-env NO_LC=true node ace db:seed",
         "generate:key": "cross-env NO_LC=true node ace generate:key",
-        "dev": "node ace serve --watch",
-        "start": "node bin/server.js",
-        "build": "cross-env NO_LC=true node ace build",
-        "test:sandbox": "tsx ./tests/sandbox.ts",
-        "test:unit": "node ace test unit",
+        "check-types": "tsc --noEmit",
+        "knip": "knip",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "check-types": "tsc --noEmit",
-        "knip": "knip"
+        "test:unit": "node ace test unit",
+        "test:sandbox": "tsx ./tests/sandbox.ts",
+        "test": "node ace test",
+        "dev": "node ace serve --watch",
+        "start": "node bin/server.js",
+        "build": "cross-env NO_LC=true node ace build"
     },
     "imports": {
         "#config/*": "./config/*.js",
@@ -95,5 +97,6 @@
     },
     "eslintConfig": {
         "extends": "@adonisjs/eslint-config/app"
-    }
+    },
+    "prettier": "@adonisjs/prettier-config"
 }
