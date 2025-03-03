@@ -57,7 +57,7 @@
         "@adonisjs/cors": "^2.2.1",
         "@adonisjs/lucid": "^21.6.0",
         "@vinejs/vine": "^3.0.0",
-        "bullmq": "^5.13.1",
+        "bullmq": "^5.39.2",
         "dedent-js": "^1.0.1",
         "luxon": "^3.5.0",
         "pg": "^8.13.3",
@@ -85,6 +85,7 @@
         "pino-pretty": "^13.0.0",
         "prettier": "^3.5.3",
         "ts-node-maintained": "^10.9.5",
+        "tsx": "^4.19.3",
         "typescript": "5.6.2"
     },
     "hotHook": {
