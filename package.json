@@ -17,6 +17,7 @@
         "url": "https://github.com/the-alien-club/adonis-boilerplate/issues"
     },
     "scripts": {
+        "v-bump": "yarn version --patch",
         "migration:fresh": "cross-env NO_LC=true node ace migration:refresh --seed",
         "migration:run": "cross-env NO_LC=true node ace migration:run",
         "db:wipe": "cross-env NO_LC=true node ace db:wipe",
