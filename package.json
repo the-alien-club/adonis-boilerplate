@@ -51,42 +51,41 @@
         "#workers/*": "./app/workers/*.js"
     },
     "dependencies": {
-        "@adonisjs/auth": "^9.3.0",
-        "@adonisjs/bouncer": "^3.1.4",
-        "@adonisjs/core": "^6.17.1",
+        "@adonisjs/auth": "^9.3.2",
+        "@adonisjs/bouncer": "^3.1.5",
+        "@adonisjs/core": "^6.17.2",
         "@adonisjs/cors": "^2.2.1",
         "@adonisjs/lucid": "^21.6.0",
         "@vinejs/vine": "^3.0.0",
-        "adonis-autoswagger": "^3.64.0",
-        "bullmq": "^5.34.10",
+        "bullmq": "^5.13.1",
         "dedent-js": "^1.0.1",
         "luxon": "^3.5.0",
-        "pg": "^8.13.1",
+        "pg": "^8.13.3",
         "reflect-metadata": "^0.2.2",
-        "uuid": "^11.0.5"
+        "uuid": "^11.1.0"
     },
     "devDependencies": {
         "@adonisjs/assembler": "^7.8.2",
-        "@adonisjs/eslint-config": "^1.3.0",
+        "@adonisjs/eslint-config": "^2.0.0",
         "@adonisjs/prettier-config": "^1.4.0",
         "@adonisjs/tsconfig": "^1.4.0",
         "@japa/api-client": "^3.0.3",
         "@japa/assert": "^4.0.1",
         "@japa/plugin-adonisjs": "^4.0.0",
-        "@japa/runner": "^4.1.0",
-        "@swc/core": "^1.10.7",
+        "@japa/runner": "^4.2.0",
+        "@swc/core": "^1.11.5",
         "@types/luxon": "^3.4.2",
-        "@types/node": "^22.10.6",
+        "@types/node": "^22.13.8",
         "@types/uuid": "^10.0.0",
         "cross-env": "^7.0.3",
-        "eslint": "^8.57.1",
+        "eslint": "^9.21.0",
         "hot-hook": "^0.4.0",
-        "knip": "^5.43.6",
+        "knip": "^5.45.0",
         "openapi-types": "^12.1.3",
         "pino-pretty": "^13.0.0",
-        "prettier": "^3.4.2",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.7.3"
+        "prettier": "^3.5.3",
+        "ts-node-maintained": "^10.9.5",
+        "typescript": "5.6.2"
     },
     "hotHook": {
         "boundaries": [
@@ -96,6 +95,5 @@
     },
     "eslintConfig": {
         "extends": "@adonisjs/eslint-config/app"
-    },
-    "prettier": "@adonisjs/prettier-config"
+    }
 }

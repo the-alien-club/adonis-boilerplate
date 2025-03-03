@@ -5,8 +5,8 @@
   <p align="center">An AdonisJS and Lucid boilerplate integrating a role system, token scopes and more!</p>
 </p>
 
-Installation
-------------
+## Installation
+
 1. Clone the repository
 2. Install dependencies
     ```typescript
@@ -17,6 +17,6 @@ Installation
     $ npm run dev // yarn dev
     ```
 
-Dev notes
----------
-*N/A*
+## Dev notes
+
+_N/A_

@@ -22,12 +22,12 @@ export default defineConfig({
             file: () => import("@adonisjs/core/providers/repl_provider"),
             environment: ["repl", "test"],
         },
-        () => import("@adonisjs/core/providers/vinejs_provider"),
         () => import("@adonisjs/cors/cors_provider"),
         () => import("@adonisjs/lucid/database_provider"),
         () => import("@adonisjs/auth/auth_provider"),
         () => import("#providers/workers_provider"),
         () => import("@adonisjs/bouncer/bouncer_provider"),
+        () => import("@adonisjs/core/providers/vinejs_provider"),
     ],
 
     /*
@@ -49,7 +49,7 @@ export default defineConfig({
             {
                 files: ["tests/functional/**/*.spec(.ts|.js)"],
                 name: "functional",
-                timeout: 30000,
+                timeout: 30_000,
             },
         ],
         forceExit: false,

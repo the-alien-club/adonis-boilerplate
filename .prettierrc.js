@@ -1,4 +1,4 @@
-import adonisPrettierConfig from "@adonisjs/prettier-config" assert { type: "json" }
+import adonisPrettierConfig from "@adonisjs/prettier-config" with { type: "json" }
 
 export default {
     ...adonisPrettierConfig,
