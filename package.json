@@ -22,7 +22,6 @@
         "db:wipe": "cross-env NO_LC=true node ace db:wipe",
         "db:seed": "cross-env NO_LC=true node ace db:seed",
         "generate:key": "cross-env NO_LC=true node ace generate:key",
-        "check-types": "tsc --noEmit",
         "knip": "knip",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
@@ -31,8 +30,8 @@
         "test:sandbox": "tsx ./tests/sandbox.ts",
         "test": "node ace test",
         "dev": "node ace serve --watch",
-        "start": "node bin/server.js",
-        "build": "cross-env NO_LC=true node ace build"
+        "build": "cross-env NO_LC=true node ace build",
+        "start": "node bin/server.js"
     },
     "imports": {
         "#config/*": "./config/*.js",
