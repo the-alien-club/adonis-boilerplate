@@ -27,8 +27,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "test:unit": "node ace test unit",
         "test:sandbox": "tsx ./tests/sandbox.ts",
+        "test:unit": "node ace test unit",
         "dev": "node ace serve --watch",
         "build": "cross-env NO_LC=true node ace build",
         "start": "node bin/server.js"
