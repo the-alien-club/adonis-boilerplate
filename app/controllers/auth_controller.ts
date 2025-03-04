@@ -22,7 +22,7 @@ export default class AuthController extends BaseController {
         const { email, username, password, description } = await request.validateUsing(userRegistrationValidator)
 
         const obj = {
-            isLocked: false,
+            isLocked: true,
             email,
             username,
             password,
