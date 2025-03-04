@@ -18,10 +18,10 @@ export default class extends BaseSchema {
             table.integer("tokenable_id").notNullable().unsigned().references("users.id").onDelete("CASCADE")
 
             // Dates
-            table.timestamp("created_at").notNullable()
-            table.timestamp("updated_at").notNullable()
-            table.timestamp("last_used_at").nullable()
-            table.timestamp("expires_at").nullable()
+            table.timestamp("created_at", { useTz: true }).notNullable()
+            table.timestamp("updated_at", { useTz: true }).notNullable()
+            table.timestamp("last_used_at", { useTz: true }).nullable()
+            table.timestamp("expires_at", { useTz: true }).nullable()
         })
     }
 
