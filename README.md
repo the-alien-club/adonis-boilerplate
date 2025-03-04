@@ -15,8 +15,6 @@
     ```typescript
     $ npm run dev // yarn dev
     ```
-## Routes
-TODO
 
 ## Registration
 You can register via the `/register` route, the body should contain the following fields:
