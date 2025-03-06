@@ -15,39 +15,47 @@ export default class UserPolicy extends BasePolicy {
         return false
     }
 
+    // Every user can view their own user object
     index(user: User): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.USER_READ)
     }
 
     // Admin only
-    adminIndex(_user: User): AuthorizerResponse {
+    // Only admins can view all users
+    adminIndex(): AuthorizerResponse {
         return false
     }
 
     // Admin only
-    store(_user: User): AuthorizerResponse {
+    // Only admins can create a user (outside of registration)
+    store(): AuthorizerResponse {
         return false
     }
 
+    // Every user can view their own user object
     show(user: User | null, fetchedUser: User | null): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.USER_READ) && user?.id === fetchedUser?.id
     }
 
+    // Every user can update their own user object
     update(user: User | null, fetchedUser: User | null): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
     }
 
+    // Every user can delete their own user object
     destroy(user: User | null, fetchedUser: User | null): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
     }
 
     // Admin only
-    lock(_user: User): AuthorizerResponse {
+    // Only admins can lock a user (except themselves)
+    lock(): AuthorizerResponse {
         return false
     }
 
     // Admin only
-    unlock(_user: User): AuthorizerResponse {
+    // Only admins can unlock a user (except themselves)
+    unlock(): AuthorizerResponse {
         return false
     }
 }

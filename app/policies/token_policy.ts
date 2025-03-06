@@ -16,27 +16,33 @@ export default class TokenPolicy extends BasePolicy {
         return false
     }
 
+    // Every user can view their own tokens
     index(user: User | null, userToGetTokensFrom: User | null): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.TOKEN_READ) && user?.id === userToGetTokensFrom?.id
     }
 
     // Admin only
-    adminIndex(_user: User): AuthorizerResponse {
+    // Only admins can view all tokens
+    adminIndex(): AuthorizerResponse {
         return false
     }
 
+    // Every user can create a token
     store(user: User | null, userToIssueTokenFrom: User | null): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user?.id === userToIssueTokenFrom?.id
     }
 
+    // Every user can view their own token
     show(user: User | null, token: AccessToken): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.TOKEN_READ) && user?.id === token.tokenableId
     }
 
+    // Every user can update their own token
     update(user: User | null, token: AccessToken): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user?.id === token.tokenableId
     }
 
+    // Every user can delete their own token
     destroy(user: User | null, token: AccessToken): AuthorizerResponse {
         return userTokenHasAbility(user, TokenAbility.TOKEN_WRITE) && user?.id === token.tokenableId
     }
