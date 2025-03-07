@@ -46,9 +46,10 @@ export default class AuthController extends BaseController {
 
     /**
      * Main user sign-in route (issue a token that will be stored inside the user's session storage).
+     * Note that `expiresIn` is optional and is expressed in seconds.
      */
     async signIn({ request }: HttpContext) {
-        const { email, username, password } = await request.validateUsing(credentialsValidator)
+        const { email, username, password, expiresIn } = await request.validateUsing(credentialsValidator)
 
         let user: User | null
 
@@ -66,6 +67,7 @@ export default class AuthController extends BaseController {
 
         const token = await User.tokens.create(user, TokenScopeAbilities.unrestricted, {
             name: "Token issued via credentials (unrestricted)",
+            expiresIn: expiresIn || undefined,
         })
 
         logger.debug(userLog(user, "signed in successfully, issuing a new token"))
