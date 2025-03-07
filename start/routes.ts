@@ -18,9 +18,9 @@ router.get("/status", [GeneralController, "status"])
 router.post("/register", [AuthController, "register"])
 router.post("/sign-in", [AuthController, "signIn"])
 
-// =====================================================
-//  Default version: Accessible via credentials / token
-// =====================================================
+// ===========================================================
+//  Logged-in user routes: Accessible via credentials / token
+// ===========================================================
 router
     .group(() => {
         // Roles
