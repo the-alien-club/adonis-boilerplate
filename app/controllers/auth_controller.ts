@@ -4,7 +4,7 @@ import {
     EC_LOCKED,
     EC_ROLE_NOT_FOUND,
     EC_USERNAME_ALREADY_EXISTS,
-} from "#config/errors"
+} from "#lib/constants/errors"
 import BaseController from "#controllers/templates/base_controller"
 import { userLog } from "#lib/utils/logger"
 import { TokenScopeAbilities } from "#lib/utils/tokens"

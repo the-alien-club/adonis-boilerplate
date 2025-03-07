@@ -1,4 +1,4 @@
-import { AdditionalData, ErrorCode } from "#config/errors"
+import { AdditionalData, ErrorCode } from "#lib/constants/errors"
 import { inject } from "@adonisjs/core"
 import { HttpContext } from "@adonisjs/core/http"
 

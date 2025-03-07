@@ -40,5 +40,6 @@ export const credentialsValidator = vine.compile(
             .optional()
             .requiredIfMissing("email"),
         password: vine.string().minLength(MIN_PASSWORD_LENGTH).maxLength(MAX_PASSWORD_LENGTH),
+        expiresIn: vine.number().optional(),
     })
 )

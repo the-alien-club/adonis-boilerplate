@@ -5,7 +5,7 @@ import {
     EC_USER_NOT_FOUND,
     EC_YOU_CANNOT_LOCK_YOURSELF,
     EC_YOU_CANNOT_UNLOCK_YOURSELF,
-} from "#config/errors"
+} from "#lib/constants/errors"
 import BaseController from "#controllers/templates/base_controller"
 import { userLog } from "#lib/utils/logger"
 import User from "#models/user"

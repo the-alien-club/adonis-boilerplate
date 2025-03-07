@@ -1,4 +1,4 @@
-import { EC_INVALID_TOKEN_SCOPE, EC_TOKEN_NOT_FOUND, EC_UNAUTHORIZED, EC_USER_NOT_FOUND } from "#config/errors"
+import { EC_INVALID_TOKEN_SCOPE, EC_TOKEN_NOT_FOUND, EC_UNAUTHORIZED, EC_USER_NOT_FOUND } from "#lib/constants/errors"
 import BaseController from "#controllers/templates/base_controller"
 import { TokenScope } from "#lib/constants/enums"
 import { userLog } from "#lib/utils/logger"
@@ -8,6 +8,7 @@ import TokenPolicy from "#policies/token_policy"
 import { AccessToken } from "@adonisjs/auth/access_tokens"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
+import { tokenCreationValidator } from "#validators/token_validator"
 
 export default class TokensController extends BaseController {
     /**
@@ -64,7 +65,7 @@ export default class TokensController extends BaseController {
      * Issue a new token.
      */
     async store({ auth, bouncer, request, params }: HttpContext) {
-        const { scope } = request.body() as { scope: TokenScope | undefined }
+        const { scope, expiresIn } = await request.validateUsing(tokenCreationValidator)
 
         let user: User | null = auth.user as User
         if (params.user_id) {
@@ -77,15 +78,22 @@ export default class TokensController extends BaseController {
         }
 
         // Validate the scope
-        if (scope && !Object.values(TokenScope).includes(scope)) return this.errorResponse(EC_INVALID_TOKEN_SCOPE)
+        if (scope && !Object.values(TokenScope).includes(scope as TokenScope)) {
+            return this.errorResponse(EC_INVALID_TOKEN_SCOPE)
+        }
 
         // Fallback to unrestricted scope in case no specific scope was provided
-        const token = await User.tokens.create(user, TokenScopeAbilities[scope ?? TokenScope.UNRESTRICTED], {
-            name:
-                user.id === auth.user?.id
-                    ? `Token issued manually (${scope}).`
-                    : `Token issued by an administrator (${scope}).`,
-        })
+        const token = await User.tokens.create(
+            user,
+            TokenScopeAbilities[(scope as TokenScope) || TokenScope.UNRESTRICTED],
+            {
+                name:
+                    user.id === auth.user?.id
+                        ? `Token issued manually (${scope}).`
+                        : `Token issued by an administrator (${scope}).`,
+                expiresIn: expiresIn || undefined,
+            }
+        )
 
         logger.debug(
             userLog(
@@ -122,7 +130,9 @@ export default class TokensController extends BaseController {
     /**
      * Update (refresh) token by ID.
      */
-    async update({ bouncer, params, auth }: HttpContext) {
+    async update({ auth, bouncer, params, request }: HttpContext) {
+        const { expiresIn } = await request.validateUsing(tokenCreationValidator)
+
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
@@ -144,6 +154,7 @@ export default class TokensController extends BaseController {
                 user.id === auth.user?.id
                     ? `Token issued manually (${scope} - refreshed).`
                     : `Token issued by an administrator (${scope} - refreshed).`,
+            expiresIn: expiresIn || undefined,
         })
 
         logger.debug(
