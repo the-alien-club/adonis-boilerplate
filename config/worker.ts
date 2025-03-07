@@ -1,4 +1,4 @@
-import redisConnector from "#config/redis"
+import redisConnector from "#database/connectors/redis"
 import { WorkerOptions } from "bullmq"
 
 /**
