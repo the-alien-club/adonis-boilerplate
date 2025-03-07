@@ -8,7 +8,7 @@ import TokenPolicy from "#policies/token_policy"
 import { AccessToken } from "@adonisjs/auth/access_tokens"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
-import { tokenCreationValidator } from "#validators/token_validator"
+import { tokenCreationValidator, tokenUpdateValidator } from "#validators/token_validator"
 
 export default class TokensController extends BaseController {
     /**
@@ -131,13 +131,13 @@ export default class TokensController extends BaseController {
      * Update (refresh) token by ID.
      */
     async update({ auth, bouncer, params, request }: HttpContext) {
-        const { expiresIn } = await request.validateUsing(tokenCreationValidator)
-
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
             if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
         }
+
+        const { expiresIn } = await request.validateUsing(tokenUpdateValidator)
 
         const currentAccessToken = await User.tokens.find(user, params.token_id)
         if (!currentAccessToken) return this.errorResponse(EC_TOKEN_NOT_FOUND)
