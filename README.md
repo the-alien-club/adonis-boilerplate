@@ -17,17 +17,17 @@
     ```
 
 ## Registration
-You can register via the `/register` route, the body should contain the following fields:
+You can sign up via the `/signup` route, the body should contain the following fields:
 
 - `email`: The email of the user **OR** the `username` (should be unique in both cases).
 - `password`: The password of the user.
 - `description`: The description of the user.
 
-Note that a registered user is locked on **all** routes by default, meaning that they cannot
+Note that a signed up user is locked on **all** routes by default, meaning that they cannot
 access the API until they are unlocked by an admin.
 
 ## Sign in
-You can sign in via the `/sign-in` route, the body should contain the following fields:
+You can sign in via the `/signin` route, the body should contain the following fields:
 
 - `email`: The email of the user **OR** the `username`.
 - `password`: The password of the user.

@@ -10,7 +10,7 @@ import { userLog } from "#lib/utils/logger"
 import { TokenScopeAbilities } from "#lib/utils/tokens"
 import Role from "#models/role"
 import User from "#models/user"
-import { credentialsValidator, userRegistrationValidator } from "#validators/auth_validator"
+import { credentialsValidator, userSigningUpValidator } from "#validators/auth_validator"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
 
@@ -18,8 +18,8 @@ export default class AuthController extends BaseController {
     /**
      * Main user registration route.
      */
-    async register({ request }: HttpContext) {
-        const { email, username, password, description } = await request.validateUsing(userRegistrationValidator)
+    async signUp({ request }: HttpContext) {
+        const { email, username, password, description } = await request.validateUsing(userSigningUpValidator)
 
         const obj = {
             isLocked: true,
@@ -40,7 +40,7 @@ export default class AuthController extends BaseController {
         if (defaultRole) await user.related("roles").attach([defaultRole.id])
         else this.errorResponse(EC_ROLE_NOT_FOUND, null, "The default role for users was not found.")
 
-        logger.debug(userLog(user, "registered successfully"))
+        logger.debug(userLog(user, "signed up successfully"))
         return this.successResponse(user)
     }
 

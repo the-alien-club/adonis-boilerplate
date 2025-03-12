@@ -9,9 +9,9 @@ import {
 } from "#lib/constants/db"
 
 /**
- * Validator for a user registering himself.
+ * Validator for a signing up user.
  */
-export const userRegistrationValidator = vine.compile(
+export const userSigningUpValidator = vine.compile(
     vine.object({
         email: vine.string().email().optional().requiredIfMissing("username"),
         username: vine
