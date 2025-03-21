@@ -18,7 +18,7 @@ export default class AuthController extends BaseController {
     /**
      * Main user registration route.
      */
-    async signUp({ request }: HttpContext) {
+    async signup({ request }: HttpContext) {
         const { email, username, password, description } = await request.validateUsing(userSigningUpValidator)
 
         const obj = {
@@ -45,10 +45,10 @@ export default class AuthController extends BaseController {
     }
 
     /**
-     * Main user sign-in route (issue a token that will be stored inside the user's session storage).
+     * Main user signin route (issue a token that will be stored inside the user's session storage).
      * Note that `expiresIn` is optional and is expressed in seconds.
      */
-    async signIn({ request }: HttpContext) {
+    async signin({ request }: HttpContext) {
         const { email, username, password, expiresIn } = await request.validateUsing(credentialsValidator)
 
         let user: User | null

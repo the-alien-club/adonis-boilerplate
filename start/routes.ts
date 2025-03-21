@@ -15,8 +15,8 @@ router.get("/status", [GeneralController, "status"])
 // =========================================
 //  Authentication routes (via credentials)
 // =========================================
-router.post("/signup", [AuthController, "signUp"])
-router.post("/signin", [AuthController, "signIn"])
+router.post("/signup", [AuthController, "signup"])
+router.post("/signin", [AuthController, "signin"])
 
 // ===========================================================
 //  Logged-in user routes: Accessible via credentials / token
