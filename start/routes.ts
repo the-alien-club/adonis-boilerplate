@@ -7,6 +7,14 @@ const RolesController = () => import("#controllers/roles_controller")
 const TokensController = () => import("#controllers/tokens_controller")
 const UsersController = () => import("#controllers/users_controller")
 
+// ============
+//  Home route
+// ============
+// For now, the default route is the status route.
+router.get("/", async ({ response }) => {
+    response.redirect("/status")
+})
+
 // ==========================================
 //  General routes (for health checks, etc.)
 // ==========================================
@@ -70,8 +78,3 @@ router
     .prefix("/admin")
     .use(middleware.auth({ guards: ["base64credentials", "token"] }))
     .use(middleware.role({ role: "admin" }))
-
-// For now, the default route is the status route.
-router.get("/", async ({ response }) => {
-    response.redirect("/status")
-})
