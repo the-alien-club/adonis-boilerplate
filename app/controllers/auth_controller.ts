@@ -45,7 +45,7 @@ export default class AuthController extends BaseController {
     }
 
     /**
-     * Main user signin route (issue a token that will be stored inside the user's session storage).
+     * Main user sign-in route (issue a token that will be stored inside the user's session storage).
      * Note that `expiresIn` is optional and is expressed in seconds.
      */
     async signin({ request }: HttpContext) {
