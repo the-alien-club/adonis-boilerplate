@@ -12,7 +12,7 @@ import { tokenCreationValidator, tokenUpdateValidator } from "#validators/token_
 
 export default class TokensController extends BaseController {
     /**
-     * Get all tokens.
+     * Get all user's tokens.
      */
     async index({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
