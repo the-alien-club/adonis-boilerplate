@@ -33,16 +33,20 @@ router
     .group(() => {
         // Roles
         router.get("/roles", [RolesController, "index"])
+
+        // Roles by ID
         router.get("/roles/:role_id", [RolesController, "show"])
 
         // Tokens
-        router.get("/tokens/:user_id", [TokensController, "index"])
-        router.post("/tokens/:user_id", [TokensController, "store"])
-        router.get("/tokens/:user_id/:token_id", [TokensController, "show"])
-        router.patch("/tokens/:user_id/:token_id", [TokensController, "update"])
-        router.delete("/tokens/:user_id/:token_id", [TokensController, "destroy"])
+        router.get("/tokens", [TokensController, "index"])
+        router.post("/tokens", [TokensController, "store"])
 
-        // Users
+        // Tokens by ID
+        router.get("/tokens/:token_id", [TokensController, "show"])
+        router.patch("/tokens/:token_id", [TokensController, "update"])
+        router.delete("/tokens/:token_id", [TokensController, "destroy"])
+
+        // User self-management
         router.get("/users/:user_id", [UsersController, "show"])
         router.patch("/users/:user_id", [UsersController, "update"])
         router.delete("/users/:user_id", [UsersController, "destroy"])
