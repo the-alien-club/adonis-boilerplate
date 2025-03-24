@@ -10,8 +10,8 @@ const UsersController = () => import("#controllers/users_controller")
 // ============
 //  Home route
 // ============
-// For now, the default route is the status route.
 router.get("/", async ({ response }) => {
+    // For now, the default route is the status route.
     response.redirect("/status")
 })
 
