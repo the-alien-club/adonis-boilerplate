@@ -1,4 +1,4 @@
-import { EC_ROLE_ALREADY_EXISTS, EC_ROLE_NOT_FOUND, EC_UNAUTHORIZED } from "#lib/constants/errors"
+import { EC_ROLE_ALREADY_EXISTS, EC_ROLE_NOT_FOUND, EC_UNAUTHORIZED } from "#lib/errors"
 import BaseController from "#controllers/templates/base_controller"
 import type { HttpContext } from "@adonisjs/core/http"
 import RolePolicy from "#policies/role_policy"

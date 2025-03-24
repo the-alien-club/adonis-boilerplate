@@ -1,4 +1,4 @@
-import { EC_LOCKED, EC_UNAUTHENTICATED, EC_UNAUTHORIZED } from "#lib/constants/errors"
+import { EC_LOCKED, EC_UNAUTHENTICATED, EC_UNAUTHORIZED } from "#lib/errors"
 import { hasRole } from "#lib/utils/roles"
 import Role from "#models/role"
 import type { HttpContext } from "@adonisjs/core/http"

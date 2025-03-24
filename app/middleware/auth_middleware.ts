@@ -1,7 +1,7 @@
 import type { HttpContext } from "@adonisjs/core/http"
 import type { NextFn } from "@adonisjs/core/types/http"
 import type { Authenticators } from "@adonisjs/auth/types"
-import { EC_INVALID_TOKEN, EC_LOCKED, EC_UNAUTHENTICATED } from "#lib/constants/errors"
+import { EC_INVALID_TOKEN, EC_LOCKED, EC_UNAUTHENTICATED } from "#lib/errors"
 import logger from "@adonisjs/core/services/logger"
 import { userLog } from "#lib/utils/logger"
 

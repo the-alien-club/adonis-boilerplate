@@ -1,7 +1,7 @@
 import app from "@adonisjs/core/services/app"
 import { HttpContext, ExceptionHandler } from "@adonisjs/core/http"
 import { errors } from "@vinejs/vine"
-import { ErrorCode } from "#lib/constants/errors"
+import { ErrorCode } from "#lib/errors"
 
 export default class HttpExceptionHandler extends ExceptionHandler {
     /**
