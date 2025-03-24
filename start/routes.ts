@@ -49,9 +49,9 @@ router
     })
     .use(middleware.auth({ guards: ["base64credentials", "token"] }))
 
-// ===========================
-//  Administrator only routes
-// ===========================
+// =================================================================
+//  Administrator only routes: Accessible via credentials / session
+// =================================================================
 router
     .group(() => {
         // Special routes to recover all data from a model
