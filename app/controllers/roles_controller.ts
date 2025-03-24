@@ -33,7 +33,7 @@ export default class RolesController extends BaseController {
     /**
      * Get all roles.
      *
-     * Note: This route is only accessible by admins to get ALL data.
+     * Note: This route is only accessible by admins in order to get ALL data.
      */
     async adminIndex({ bouncer, request }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("adminIndex")) {

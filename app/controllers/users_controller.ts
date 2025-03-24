@@ -18,7 +18,7 @@ export default class UsersController extends BaseController {
     /**
      * Get all users.
      *
-     * Note: This route is only accessible by admins to get ALL data.
+     * Note: This route is only accessible by admins in order to get ALL data.
      */
     async adminIndex({ bouncer, request }: HttpContext) {
         if (await bouncer.with(UserPolicy).denies("adminIndex")) {

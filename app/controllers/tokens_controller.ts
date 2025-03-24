@@ -32,7 +32,7 @@ export default class TokensController extends BaseController {
     /**
      * Get all tokens.
      *
-     * Note: This route is only accessible by admins to get ALL data.
+     * Note: This route is only accessible by admins in order to get ALL data.
      */
     async adminIndex({ bouncer }: HttpContext) {
         if (await bouncer.with(TokenPolicy).denies("adminIndex")) {
