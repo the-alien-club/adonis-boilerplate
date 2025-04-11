@@ -9,9 +9,6 @@ tmp
 .env.production.local
 .env.development.local
 
-# Frontend assets compiled code
-public/assets
-
 # Build tools specific
 npm-debug.log
 yarn-error.log
@@ -22,6 +19,3 @@ yarn-error.log
 
 # Platform specific
 .DS_Store
-
-# Development PostgreSQL data directory
-database/docker
