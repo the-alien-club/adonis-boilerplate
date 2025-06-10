@@ -7,10 +7,10 @@ import { userTokenHasAbility } from "#lib/utils/tokens"
 import { TokenAbility } from "#lib/constants/enums"
 
 export default class TokenPolicy extends BasePolicy {
-    async before(user: User | null) {
+    async before(user: User | null): Promise<AuthorizerResponse> {
         if (user) {
             const isAdmin = await hasRole(user, "admin")
-            return isAdmin || undefined
+            return isAdmin
         }
 
         return false

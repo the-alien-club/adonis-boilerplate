@@ -7,10 +7,10 @@ import Role from "#models/role"
 import { TokenAbility } from "#lib/constants/enums"
 
 export default class AbiPolicy extends BasePolicy {
-    async before(user: User | null) {
+    async before(user: User | null): Promise<AuthorizerResponse> {
         if (user) {
             const isAdmin = await hasRole(user, "admin")
-            return isAdmin || undefined
+            return isAdmin
         }
 
         return false
@@ -35,8 +35,13 @@ export default class AbiPolicy extends BasePolicy {
     }
 
     // Every user can view their own role
-    show(user: User | null, role: Role): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.ROLE_READ) && hasRole(user, role.name)
+    async show(user: User | null, role: Role): Promise<AuthorizerResponse> {
+        if (userTokenHasAbility(user, TokenAbility.ROLE_READ)) {
+            const doesUserHaveRole = await hasRole(user, role.name)
+            return doesUserHaveRole
+        }
+
+        return false
     }
 
     // Admin only
