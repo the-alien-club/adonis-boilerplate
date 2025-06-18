@@ -17,7 +17,7 @@ export default class Role extends BaseModel {
     // Relationships
     // Many-to-many relationship with the `users` table
     @manyToMany(() => User, {
-        pivotTable: "user_roles",
+        pivotTable: "user_roles_pivot",
         pivotForeignKey: "role_id",
         pivotRelatedForeignKey: "user_id",
         pivotTimestamps: true,
