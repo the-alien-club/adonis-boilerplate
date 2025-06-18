@@ -12,7 +12,10 @@ export default class extends BaseSchema {
             table.string("email").nullable().unique()
             table.string("username", DB_CONSTANTS.MAX_USERNAME_LENGTH).nullable().unique()
             table.string("password", DB_CONSTANTS.MAX_PASSWORD_LENGTH).notNullable()
+            table.string("first_name", DB_CONSTANTS.MAX_NAME_LENGTH).nullable()
+            table.string("last_name", DB_CONSTANTS.MAX_NAME_LENGTH).nullable()
             table.string("description", DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).nullable()
+            table.string("image_url", DB_CONSTANTS.MAX_URL_LENGTH).nullable()
 
             // Dates
             table.timestamp("created_at", { useTz: true }).notNullable()

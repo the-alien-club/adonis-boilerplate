@@ -29,7 +29,16 @@ export default class User extends compose(BaseModel, AuthFinder) {
     declare password: string
 
     @column()
+    declare firstName: string | null
+
+    @column()
+    declare lastName: string | null
+
+    @column()
     declare description: string | null
+
+    @column()
+    declare imageUrl: string | null
 
     // Relationships
     // Many-to-many relationship with the `roles` table

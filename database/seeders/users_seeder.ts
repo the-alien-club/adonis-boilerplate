@@ -15,6 +15,9 @@ export default class extends BaseSeeder {
                 username: env.get("DEFAULT_ADMIN_USERNAME"),
                 password: env.get("DEFAULT_ADMIN_PASSWORD"),
                 description: "The default administrator.",
+                firstName: "Admin",
+                lastName: "User",
+                imageUrl: "https://example.com/default-admin-image.png", // Replace with a valid URL or leave null
             },
         ])
 
