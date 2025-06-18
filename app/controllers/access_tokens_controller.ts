@@ -1,7 +1,6 @@
 import BaseController from "#controllers/templates/base_controller"
-import { AccessTokenScope } from "#lib/constants/enums"
 import { userLog } from "#lib/utils/logger"
-import { AccessTokenScopeAbilities, recoverAccessTokenScope } from "#lib/utils/access_tokens"
+import { AccessTokenScope, AccessTokenScopeAbilities, recoverAccessTokenScope } from "#lib/utils/access_tokens"
 import User from "#models/user"
 import AccessTokenPolicy from "#policies/access_token_policy"
 import { AccessToken } from "@adonisjs/auth/access_tokens"
