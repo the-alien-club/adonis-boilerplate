@@ -4,9 +4,6 @@ import type { ManyToMany } from "@adonisjs/lucid/types/relations"
 
 import { DateTime } from "luxon"
 
-/**
- * The model for a user role.
- */
 export default class Role extends BaseModel {
     @column({ isPrimary: true })
     declare id: number
