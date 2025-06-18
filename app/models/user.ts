@@ -52,8 +52,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime
 
-    // Tokens for the user
-    static tokens = DbAccessTokensProvider.forModel(User)
+    // Access tokens for the user
+    static accessTokens = DbAccessTokensProvider.forModel(User)
 
     // The current access token (only accessible directly via AdonisJS)
     declare currentAccessToken: AccessToken | null
