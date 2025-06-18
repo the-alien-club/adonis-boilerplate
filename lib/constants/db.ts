@@ -32,3 +32,8 @@ export const NAME_PATTERN = /^[a-z0-9_-]+$/
  * The maximum length of the description column for all tables.
  */
 export const MAX_DESCRIPTION_LENGTH = 255
+
+/**
+ * The maximum length of a URL.
+ */
+export const MAX_URL_LENGTH = 2048
