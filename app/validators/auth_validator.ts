@@ -1,12 +1,5 @@
 import vine from "@vinejs/vine"
-import {
-    MAX_DESCRIPTION_LENGTH,
-    MAX_PASSWORD_LENGTH,
-    MAX_USERNAME_LENGTH,
-    MIN_PASSWORD_LENGTH,
-    MIN_USERNAME_LENGTH,
-    NAME_PATTERN,
-} from "#lib/constants/db"
+import DB_CONSTANTS from "#lib/constants/db"
 
 /**
  * Validator for a signing up user.
@@ -16,13 +9,13 @@ export const userSigningUpValidator = vine.compile(
         email: vine.string().email().optional().requiredIfMissing("username"),
         username: vine
             .string()
-            .minLength(MIN_USERNAME_LENGTH)
-            .maxLength(MAX_USERNAME_LENGTH)
-            .regex(NAME_PATTERN)
+            .minLength(DB_CONSTANTS.MIN_USERNAME_LENGTH)
+            .maxLength(DB_CONSTANTS.MAX_USERNAME_LENGTH)
+            .regex(DB_CONSTANTS.NAME_PATTERN)
             .optional()
             .requiredIfMissing("email"),
-        password: vine.string().minLength(MIN_PASSWORD_LENGTH).maxLength(MAX_PASSWORD_LENGTH),
-        description: vine.string().minLength(1).maxLength(MAX_DESCRIPTION_LENGTH).optional(),
+        password: vine.string().minLength(DB_CONSTANTS.MIN_PASSWORD_LENGTH).maxLength(DB_CONSTANTS.MAX_PASSWORD_LENGTH),
+        description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).optional(),
     })
 )
 
@@ -34,12 +27,12 @@ export const credentialsValidator = vine.compile(
         email: vine.string().email().optional().requiredIfMissing("username"),
         username: vine
             .string()
-            .minLength(MIN_USERNAME_LENGTH)
-            .maxLength(MAX_USERNAME_LENGTH)
-            .regex(NAME_PATTERN)
+            .minLength(DB_CONSTANTS.MIN_USERNAME_LENGTH)
+            .maxLength(DB_CONSTANTS.MAX_USERNAME_LENGTH)
+            .regex(DB_CONSTANTS.NAME_PATTERN)
             .optional()
             .requiredIfMissing("email"),
-        password: vine.string().minLength(MIN_PASSWORD_LENGTH).maxLength(MAX_PASSWORD_LENGTH),
+        password: vine.string().minLength(DB_CONSTANTS.MIN_PASSWORD_LENGTH).maxLength(DB_CONSTANTS.MAX_PASSWORD_LENGTH),
         expiresIn: vine.number().optional(),
     })
 )

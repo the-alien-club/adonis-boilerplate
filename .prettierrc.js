@@ -1,4 +1,4 @@
-import adonisPrettierConfig from "../../node_modules/@adonisjs/prettier-config/index.cjs"
+import adonisPrettierConfig from "./node_modules/@adonisjs/prettier-config/index.cjs"
 
 export default {
     ...adonisPrettierConfig,

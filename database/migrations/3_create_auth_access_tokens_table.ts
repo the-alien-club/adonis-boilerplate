@@ -1,4 +1,4 @@
-import { MAX_NAME_LENGTH } from "#lib/constants/db"
+import DB_CONSTANTS from "#lib/constants/db"
 import { BaseSchema } from "@adonisjs/lucid/schema"
 
 export default class extends BaseSchema {
@@ -9,7 +9,7 @@ export default class extends BaseSchema {
             table.increments("id").primary()
 
             table.string("type").notNullable()
-            table.string("name", MAX_NAME_LENGTH).notNullable()
+            table.string("name", DB_CONSTANTS.MAX_NAME_LENGTH).notNullable()
             table.string("hash").notNullable()
             table.text("abilities").notNullable()
 

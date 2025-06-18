@@ -1,4 +1,4 @@
-import { MAX_DESCRIPTION_LENGTH, MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH } from "#lib/constants/db"
+import DB_CONSTANTS from "#lib/constants/db"
 import { BaseSchema } from "@adonisjs/lucid/schema"
 
 export default class extends BaseSchema {
@@ -10,9 +10,9 @@ export default class extends BaseSchema {
 
             table.boolean("is_locked").notNullable().defaultTo(true)
             table.string("email").nullable().unique()
-            table.string("username", MAX_USERNAME_LENGTH).nullable().unique()
-            table.string("password", MAX_PASSWORD_LENGTH).notNullable()
-            table.string("description", MAX_DESCRIPTION_LENGTH).nullable()
+            table.string("username", DB_CONSTANTS.MAX_USERNAME_LENGTH).nullable().unique()
+            table.string("password", DB_CONSTANTS.MAX_PASSWORD_LENGTH).notNullable()
+            table.string("description", DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).nullable()
 
             // Dates
             table.timestamp("created_at", { useTz: true }).notNullable()

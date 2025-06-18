@@ -1,4 +1,4 @@
-import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from "#lib/constants/db"
+import DB_CONSTANTS from "#lib/constants/db"
 import { BaseSchema } from "@adonisjs/lucid/schema"
 
 export default class extends BaseSchema {
@@ -8,8 +8,8 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table) => {
             table.increments("id").primary()
 
-            table.string("name", MAX_NAME_LENGTH).notNullable().unique()
-            table.string("description", MAX_DESCRIPTION_LENGTH).notNullable()
+            table.string("name", DB_CONSTANTS.MAX_NAME_LENGTH).notNullable().unique()
+            table.string("description", DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).notNullable()
 
             // Dates
             table.timestamp("created_at", { useTz: true }).notNullable()

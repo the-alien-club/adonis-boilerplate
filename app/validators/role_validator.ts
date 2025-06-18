@@ -1,4 +1,4 @@
-import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, NAME_PATTERN } from "#lib/constants/db"
+import DB_CONSTANTS from "#lib/constants/db"
 import vine from "@vinejs/vine"
 
 /**
@@ -6,8 +6,8 @@ import vine from "@vinejs/vine"
  */
 export const roleCreationValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(1).maxLength(MAX_NAME_LENGTH).regex(NAME_PATTERN),
-        description: vine.string().minLength(1).maxLength(MAX_DESCRIPTION_LENGTH),
+        name: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).regex(DB_CONSTANTS.NAME_PATTERN),
+        description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH),
     })
 )
 
@@ -16,7 +16,12 @@ export const roleCreationValidator = vine.compile(
  */
 export const roleUpdateValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(1).maxLength(MAX_NAME_LENGTH).regex(NAME_PATTERN).optional(),
-        description: vine.string().minLength(1).maxLength(MAX_DESCRIPTION_LENGTH).optional(),
+        name: vine
+            .string()
+            .minLength(1)
+            .maxLength(DB_CONSTANTS.MAX_NAME_LENGTH)
+            .regex(DB_CONSTANTS.NAME_PATTERN)
+            .optional(),
+        description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).optional(),
     })
 )
