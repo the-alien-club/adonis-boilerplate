@@ -1,6 +1,6 @@
 import { BaseSchema } from "@adonisjs/lucid/schema"
 
-export default class SkillUsers extends BaseSchema {
+export default class extends BaseSchema {
     protected tableName = "user_roles"
 
     async up() {
