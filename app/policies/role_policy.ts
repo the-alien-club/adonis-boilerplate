@@ -2,9 +2,9 @@ import User from "#models/user"
 import { AuthorizerResponse } from "@adonisjs/bouncer/types"
 import { hasRole } from "#lib/utils/roles"
 import { BasePolicy } from "@adonisjs/bouncer"
-import { userTokenHasAbility } from "#lib/utils/tokens"
+import { userAccessTokenHasAbility } from "#lib/utils/access_tokens"
 import Role from "#models/role"
-import { TokenAbility } from "#lib/constants/enums"
+import { AccessTokenAbility } from "#lib/constants/enums"
 
 export default class AbiPolicy extends BasePolicy {
     async before(user: User | null): Promise<AuthorizerResponse> {
@@ -36,7 +36,7 @@ export default class AbiPolicy extends BasePolicy {
 
     // Every user can view their own role
     async show(user: User | null, role: Role): Promise<AuthorizerResponse> {
-        if (userTokenHasAbility(user, TokenAbility.ROLE_READ)) {
+        if (userAccessTokenHasAbility(user, AccessTokenAbility.ROLE_READ)) {
             const doesUserHaveRole = await hasRole(user, role.name)
             return doesUserHaveRole
         }

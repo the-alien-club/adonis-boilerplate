@@ -7,7 +7,7 @@ import {
 } from "#lib/errors"
 import BaseController from "#controllers/templates/base_controller"
 import { userLog } from "#lib/utils/logger"
-import { TokenScopeAbilities } from "#lib/utils/tokens"
+import { AccessTokenScopeAbilities } from "#lib/utils/access_tokens"
 import Role from "#models/role"
 import User from "#models/user"
 import { credentialsValidator, userSigningUpValidator } from "#validators/auth_validator"
@@ -65,12 +65,12 @@ export default class AuthController extends BaseController {
             return this.errorResponse(EC_LOCKED, null, "Your account is locked. Please contact an administrator.")
         }
 
-        const token = await User.tokens.create(user, TokenScopeAbilities.unrestricted, {
-            name: "Token issued via credentials (unrestricted)",
+        const accessToken = await User.accessTokens.create(user, AccessTokenScopeAbilities.unrestricted, {
+            name: "Access token issued via credentials (unrestricted)",
             expiresIn: expiresIn || undefined,
         })
 
-        logger.debug(userLog(user, "signed in successfully, issuing a new token"))
-        return this.successResponse(token)
+        logger.debug(userLog(user, "signed in successfully, issuing a new access token"))
+        return this.successResponse(accessToken)
     }
 }

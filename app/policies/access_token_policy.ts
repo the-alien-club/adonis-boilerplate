@@ -1,0 +1,64 @@
+import User from "#models/user"
+import { AuthorizerResponse } from "@adonisjs/bouncer/types"
+import { hasRole } from "#lib/utils/roles"
+import { BasePolicy } from "@adonisjs/bouncer"
+import { AccessToken } from "@adonisjs/auth/access_tokens"
+import { userAccessTokenHasAbility } from "#lib/utils/access_tokens"
+import { AccessTokenAbility } from "#lib/constants/enums"
+
+export default class AccessTokenPolicy extends BasePolicy {
+    async before(user: User | null): Promise<AuthorizerResponse> {
+        if (user) {
+            const isAdmin = await hasRole(user, "admin")
+            return isAdmin
+        }
+
+        return false
+    }
+
+    // Every user can view their own access tokens
+    index(user: User | null, userToGetAccessTokensFrom: User | null): AuthorizerResponse {
+        return (
+            userAccessTokenHasAbility(user, AccessTokenAbility.ACCESS_TOKEN_READ) &&
+            user?.id === userToGetAccessTokensFrom?.id
+        )
+    }
+
+    // Admin only
+    // Only admins can view all access tokens
+    adminIndex(): AuthorizerResponse {
+        return false
+    }
+
+    // Every user can create a access token
+    store(user: User | null, userToGetAccessTokensFrom: User | null): AuthorizerResponse {
+        return (
+            userAccessTokenHasAbility(user, AccessTokenAbility.ACCESS_TOKEN_WRITE) &&
+            user?.id === userToGetAccessTokensFrom?.id
+        )
+    }
+
+    // Every user can view their own access token
+    show(user: User | null, accessToken: AccessToken): AuthorizerResponse {
+        return (
+            userAccessTokenHasAbility(user, AccessTokenAbility.ACCESS_TOKEN_READ) &&
+            user?.id === accessToken.tokenableId
+        )
+    }
+
+    // Every user can update their own access token
+    update(user: User | null, accessToken: AccessToken): AuthorizerResponse {
+        return (
+            userAccessTokenHasAbility(user, AccessTokenAbility.ACCESS_TOKEN_READ) &&
+            user?.id === accessToken.tokenableId
+        )
+    }
+
+    // Every user can delete their own access token
+    destroy(user: User | null, accessToken: AccessToken): AuthorizerResponse {
+        return (
+            userAccessTokenHasAbility(user, AccessTokenAbility.ACCESS_TOKEN_READ) &&
+            user?.id === accessToken.tokenableId
+        )
+    }
+}

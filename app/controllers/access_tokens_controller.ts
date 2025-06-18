@@ -1,0 +1,209 @@
+import BaseController from "#controllers/templates/base_controller"
+import { AccessTokenScope } from "#lib/constants/enums"
+import { userLog } from "#lib/utils/logger"
+import { AccessTokenScopeAbilities, recoverAccessTokenScope } from "#lib/utils/access_tokens"
+import User from "#models/user"
+import AccessTokenPolicy from "#policies/access_token_policy"
+import { AccessToken } from "@adonisjs/auth/access_tokens"
+import { HttpContext } from "@adonisjs/core/http"
+import logger from "@adonisjs/core/services/logger"
+import { accessTokenCreationValidator, accessTokenUpdateValidator } from "#validators/access_token_validator"
+import {
+    EC_ACCESS_TOKEN_NOT_FOUND,
+    EC_INVALID_ACCESS_TOKEN_SCOPE,
+    EC_UNAUTHORIZED,
+    EC_USER_NOT_FOUND,
+} from "#lib/errors"
+
+export default class AccessTokensController extends BaseController {
+    /**
+     * Get all user's access tokens.
+     */
+    async index({ auth, bouncer, params }: HttpContext) {
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
+
+        if (await bouncer.with(AccessTokenPolicy).denies("index", user)) {
+            return this.errorResponse(EC_UNAUTHORIZED)
+        }
+
+        const accessTokens = await User.accessTokens.all(user)
+        return this.successResponse(accessTokens)
+    }
+
+    /**
+     * Get all access tokens.
+     *
+     * Note: This route is only accessible by admins in order to get ALL data.
+     */
+    async adminIndex({ bouncer }: HttpContext) {
+        if (await bouncer.with(AccessTokenPolicy).denies("adminIndex")) {
+            return this.errorResponse(EC_UNAUTHORIZED)
+        }
+
+        const users = await User.all()
+        const accessTokens: AccessToken[] = []
+
+        for (const user of users) {
+            const userAccessTokens = await User.accessTokens.all(user)
+            accessTokens.push(...userAccessTokens)
+        }
+
+        return this.successResponse(
+            accessTokens.map((accessToken) => ({
+                id: accessToken.identifier,
+                name: accessToken.name,
+                user_id: accessToken.tokenableId,
+                abilities: accessToken.abilities,
+                createdAt: accessToken.createdAt,
+                updatedAt: accessToken.updatedAt,
+                lastUsedAt: accessToken.lastUsedAt,
+                expiresAt: accessToken.expiresAt,
+            }))
+        )
+    }
+
+    /**
+     * Issue a new access token.
+     */
+    async store({ auth, bouncer, request, params }: HttpContext) {
+        const { scope, expiresIn } = await request.validateUsing(accessTokenCreationValidator)
+
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
+
+        if (await bouncer.with(AccessTokenPolicy).denies("store", user)) {
+            return this.errorResponse(EC_UNAUTHORIZED)
+        }
+
+        // Validate the scope
+        if (scope && !Object.values(AccessTokenScope).includes(scope as AccessTokenScope)) {
+            return this.errorResponse(EC_INVALID_ACCESS_TOKEN_SCOPE)
+        }
+
+        // Fallback to unrestricted scope in case no specific scope was provided
+        const accessToken = await User.accessTokens.create(
+            user,
+            AccessTokenScopeAbilities[(scope as AccessTokenScope) || AccessTokenScope.UNRESTRICTED],
+            {
+                name:
+                    user.id === auth.user?.id
+                        ? `Access token issued manually (${scope}).`
+                        : `Access token issued by an administrator (${scope}).`,
+                expiresIn: expiresIn || undefined,
+            }
+        )
+
+        logger.debug(
+            userLog(
+                user,
+                user.id === auth.user?.id
+                    ? `issued themselves a new access token with the scope '${scope}'.`
+                    : `issued a new access token with the scope '${scope}' for the user ${user.id}.`
+            )
+        )
+
+        return this.successResponse(accessToken)
+    }
+
+    /**
+     * Get access token by ID.
+     */
+    async show({ auth, bouncer, params }: HttpContext) {
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
+
+        const accessToken = await User.accessTokens.find(user, params.access_token_id)
+        if (!accessToken) return this.errorResponse(EC_USER_NOT_FOUND)
+
+        if (await bouncer.with(AccessTokenPolicy).denies("show", accessToken)) {
+            return this.errorResponse(EC_UNAUTHORIZED)
+        }
+
+        return this.successResponse(accessToken)
+    }
+
+    /**
+     * Update (refresh) access token by ID.
+     */
+    async update({ auth, bouncer, params, request }: HttpContext) {
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
+
+        const { expiresIn } = await request.validateUsing(accessTokenUpdateValidator)
+
+        const currentAccessToken = await User.accessTokens.find(user, params.access_token_id)
+        if (!currentAccessToken) return this.errorResponse(EC_ACCESS_TOKEN_NOT_FOUND)
+
+        if (await bouncer.with(AccessTokenPolicy).denies("update", currentAccessToken)) {
+            return this.errorResponse(EC_UNAUTHORIZED)
+        }
+
+        const scope = recoverAccessTokenScope(currentAccessToken.abilities)
+
+        await User.accessTokens.delete(user, params.access_token_id)
+        const accessToken = await User.accessTokens.create(user, currentAccessToken.abilities, {
+            name:
+                user.id === auth.user?.id
+                    ? `Access token issued manually (${scope} - refreshed).`
+                    : `Access token issued by an administrator (${scope} - refreshed).`,
+            expiresIn: expiresIn || undefined,
+        })
+
+        logger.debug(
+            userLog(
+                user,
+                user.id === auth.user?.id
+                    ? `refreshed their access token with the scope '${scope}'.`
+                    : `refreshed a access token with the scope '${scope}' for the user ${user.id}.`
+            )
+        )
+
+        return this.successResponse(accessToken)
+    }
+
+    /**
+     * Delete access token by ID.
+     */
+    async destroy({ auth, bouncer, params }: HttpContext) {
+        let user: User | null = auth.user as User
+        if (params.user_id) {
+            user = await User.find(params.user_id)
+            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        }
+
+        const currentAccessToken = await User.accessTokens.find(user, params.access_token_id)
+        if (!currentAccessToken) return this.errorResponse(EC_ACCESS_TOKEN_NOT_FOUND)
+
+        if (await bouncer.with(AccessTokenPolicy).denies("destroy", currentAccessToken)) {
+            return this.errorResponse(EC_UNAUTHORIZED)
+        }
+
+        const scope = recoverAccessTokenScope(currentAccessToken.abilities)
+
+        await User.accessTokens.delete(user, params.access_token_id)
+
+        logger.debug(
+            userLog(
+                user,
+                user.id === currentAccessToken.tokenableId
+                    ? `revoked their access token with the scope '${scope}'.`
+                    : `revoked a access token with the scope '${scope}' for the user ${user.id}.`
+            )
+        )
+
+        return this.successResponse()
+    }
+}

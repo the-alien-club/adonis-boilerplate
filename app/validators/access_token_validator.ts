@@ -1,9 +1,9 @@
 import vine from "@vinejs/vine"
 
 /**
- * Validator for the token creation.
+ * Validator for the access token creation.
  */
-export const tokenCreationValidator = vine.compile(
+export const accessTokenCreationValidator = vine.compile(
     vine.object({
         scope: vine.string().optional(), // The scope is later validated in the controller
         expiresIn: vine.number().optional(),
@@ -11,9 +11,9 @@ export const tokenCreationValidator = vine.compile(
 )
 
 /**
- * Validator for the token update (refresh).
+ * Validator for the access token update (refresh).
  */
-export const tokenUpdateValidator = vine.compile(
+export const accessTokenUpdateValidator = vine.compile(
     vine.object({
         expiresIn: vine.number().optional(),
     })

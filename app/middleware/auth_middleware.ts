@@ -1,7 +1,7 @@
 import type { HttpContext } from "@adonisjs/core/http"
 import type { NextFn } from "@adonisjs/core/types/http"
 import type { Authenticators } from "@adonisjs/auth/types"
-import { EC_INVALID_TOKEN, EC_LOCKED, EC_UNAUTHENTICATED } from "#lib/errors"
+import { EC_INVALID_ACCESS_TOKEN, EC_LOCKED, EC_UNAUTHENTICATED } from "#lib/errors"
 import logger from "@adonisjs/core/services/logger"
 import { userLog } from "#lib/utils/logger"
 
@@ -24,8 +24,8 @@ export default class AuthMiddleware {
         } catch (error) {
             return ctx.response.forbidden({
                 success: false,
-                message: "The token that was provided is invalid or has expired.",
-                error: EC_INVALID_TOKEN,
+                message: "The access token that was provided is invalid or has expired.",
+                error: EC_INVALID_ACCESS_TOKEN,
             })
         }
 

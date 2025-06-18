@@ -1,25 +1,25 @@
 /**
- * The scope of a token that can be issued.
+ * The scope of an access token that can be issued.
  */
-export enum TokenScope {
+export enum AccessTokenScope {
     UNRESTRICTED = "unrestricted",
     API_KEY = "api-key",
     API_SECRET = "api-secret",
 }
 
 /**
- * A list of all available token abilities.
+ * A list of all available access token abilities.
  */
-export enum TokenAbility {
+export enum AccessTokenAbility {
     // Unrestricted / all abilities
     UNRESTRICTED = "*",
 
     // Roles
     ROLE_READ = "role:read",
 
-    // Tokens
-    TOKEN_READ = "token:read",
-    TOKEN_WRITE = "token:write",
+    // Access tokens
+    ACCESS_TOKEN_READ = "access-token:read",
+    ACCESS_TOKEN_WRITE = "access-token:write",
 
     // Users
     USER_READ = "user:read",

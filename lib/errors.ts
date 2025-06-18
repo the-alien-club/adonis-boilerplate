@@ -47,18 +47,18 @@ export const EC_EMPTY_DATA: ErrorCode = {
 }
 
 /** ERROR CODE (EC) [400] */
-export const EC_INVALID_TOKEN_SCOPE: ErrorCode = {
+export const EC_INVALID_ACCESS_TOKEN_SCOPE: ErrorCode = {
     status: 400,
-    name: "INVALID_TOKEN_SCOPE",
-    message: "Invalid token scope.",
+    name: "INVALID_ACCESS_TOKEN_SCOPE",
+    message: "Invalid access token scope.",
     data: null,
 }
 
 /** ERROR CODE (EC) [400] */
-export const EC_INVALID_TOKEN: ErrorCode = {
+export const EC_INVALID_ACCESS_TOKEN: ErrorCode = {
     status: 400,
-    name: "INVALID_TOKEN",
-    message: "Invalid token.",
+    name: "INVALID_ACCESS_TOKEN",
+    message: "Invalid access token.",
     data: null,
 }
 
@@ -127,10 +127,10 @@ export const EC_USER_NOT_FOUND: ErrorCode = {
 }
 
 /** ERROR CODE (EC) [404] */
-export const EC_TOKEN_NOT_FOUND: ErrorCode = {
+export const EC_ACCESS_TOKEN_NOT_FOUND: ErrorCode = {
     status: 404,
-    name: "TOKEN_NOT_FOUND",
-    message: "Token not found.",
+    name: "ACCESS_TOKEN_NOT_FOUND",
+    message: "Access token not found.",
     data: null,
 }
 

@@ -5,17 +5,17 @@ import { basicAuthGuard, basicAuthUserProvider } from "@adonisjs/auth/basic_auth
 
 /**
  * The configuration settings for the auth module,
- * either via basic auth or token-based auth.
+ * either via basic auth or access-token-based auth.
  */
 const authConfig = defineConfig({
-    default: "token",
+    default: "accessTokens",
     guards: {
         base64credentials: basicAuthGuard({
             provider: basicAuthUserProvider({
                 model: () => import("#models/user"),
             }),
         }),
-        token: tokensGuard({
+        accessTokens: tokensGuard({
             provider: tokensUserProvider({
                 tokens: "accessTokens",
                 model: () => import("#models/user"),

@@ -1,9 +1,9 @@
 import { hasRole } from "#lib/utils/roles"
-import { userTokenHasAbility } from "#lib/utils/tokens"
+import { userAccessTokenHasAbility } from "#lib/utils/access_tokens"
 import User from "#models/user"
 import { BasePolicy } from "@adonisjs/bouncer"
 import { AuthorizerResponse } from "@adonisjs/bouncer/types"
-import { TokenAbility } from "#lib/constants/enums"
+import { AccessTokenAbility } from "#lib/constants/enums"
 
 export default class UserPolicy extends BasePolicy {
     async before(user: User | null): Promise<AuthorizerResponse> {
@@ -17,7 +17,7 @@ export default class UserPolicy extends BasePolicy {
 
     // Every user can view their own user object
     index(user: User): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.USER_READ)
+        return userAccessTokenHasAbility(user, AccessTokenAbility.USER_READ)
     }
 
     // Admin only
@@ -34,17 +34,17 @@ export default class UserPolicy extends BasePolicy {
 
     // Every user can view their own user object
     show(user: User | null, fetchedUser: User | null): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.USER_READ) && user?.id === fetchedUser?.id
+        return userAccessTokenHasAbility(user, AccessTokenAbility.USER_READ) && user?.id === fetchedUser?.id
     }
 
     // Every user can update their own user object
     update(user: User | null, fetchedUser: User | null): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
+        return userAccessTokenHasAbility(user, AccessTokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
     }
 
     // Every user can delete their own user object
     destroy(user: User | null, fetchedUser: User | null): AuthorizerResponse {
-        return userTokenHasAbility(user, TokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
+        return userAccessTokenHasAbility(user, AccessTokenAbility.USER_WRITE) && user?.id === fetchedUser?.id
     }
 
     // Admin only

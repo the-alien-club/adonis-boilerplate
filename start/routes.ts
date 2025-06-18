@@ -4,7 +4,7 @@ import router from "@adonisjs/core/services/router"
 const AuthController = () => import("#controllers/auth_controller")
 const GeneralController = () => import("#controllers/general_controller")
 const RolesController = () => import("#controllers/roles_controller")
-const TokensController = () => import("#controllers/tokens_controller")
+const AccessTokensController = () => import("#controllers/access_tokens_controller")
 const UsersController = () => import("#controllers/users_controller")
 
 // ============
@@ -26,9 +26,9 @@ router.get("/status", [GeneralController, "status"])
 router.post("/signup", [AuthController, "signup"])
 router.post("/signin", [AuthController, "signin"])
 
-// ===========================================================
-//  Logged-in user routes: Accessible via credentials / token
-// ===========================================================
+// ==================================================================
+//  Logged-in user routes: Accessible via credentials / access token
+// ==================================================================
 router
     .group(() => {
         // Roles
@@ -37,21 +37,21 @@ router
         // Roles by ID
         router.get("/roles/:role_id", [RolesController, "show"])
 
-        // Tokens
-        router.get("/tokens", [TokensController, "index"])
-        router.post("/tokens", [TokensController, "store"])
+        // Access tokens
+        router.get("/access-tokens", [AccessTokensController, "index"])
+        router.post("/access-tokens", [AccessTokensController, "store"])
 
-        // Tokens by ID
-        router.get("/tokens/:token_id", [TokensController, "show"])
-        router.patch("/tokens/:token_id", [TokensController, "update"])
-        router.delete("/tokens/:token_id", [TokensController, "destroy"])
+        // Access tokens by ID
+        router.get("/access-tokens/:access_token_id", [AccessTokensController, "show"])
+        router.patch("/access-tokens/:access_token_id", [AccessTokensController, "update"])
+        router.delete("/access-tokens/:access_token_id", [AccessTokensController, "destroy"])
 
         // User self-management
         router.get("/users/:user_id", [UsersController, "show"])
         router.patch("/users/:user_id", [UsersController, "update"])
         router.delete("/users/:user_id", [UsersController, "destroy"])
     })
-    .use(middleware.auth({ guards: ["base64credentials", "token"] }))
+    .use(middleware.auth({ guards: ["base64credentials", "accessTokens"] }))
 
 // =================================================================
 //  Administrator only routes: Accessible via credentials / session
@@ -60,7 +60,7 @@ router
     .group(() => {
         // Special routes to recover all data from a model
         router.get("/roles", [RolesController, "adminIndex"])
-        router.get("/tokens", [TokensController, "adminIndex"])
+        router.get("/access-tokens", [AccessTokensController, "adminIndex"])
         router.get("/users", [UsersController, "adminIndex"])
 
         // Roles management
@@ -68,17 +68,17 @@ router
         router.patch("/roles/:role_id", [RolesController, "update"])
         router.delete("/roles/:role_id", [RolesController, "destroy"])
 
-        // User's tokens management
-        router.get("/tokens/:user_id", [TokensController, "index"])
-        router.post("/tokens/:user_id", [TokensController, "store"])
-        router.get("/tokens/:user_id/:token_id", [TokensController, "show"])
-        router.patch("/tokens/:user_id/:token_id", [TokensController, "update"])
-        router.delete("/tokens/:user_id/:token_id", [TokensController, "destroy"])
+        // User's access tokens management
+        router.get("/access-tokens/:user_id", [AccessTokensController, "index"])
+        router.post("/access-tokens/:user_id", [AccessTokensController, "store"])
+        router.get("/access-tokens/:user_id/:access_token_id", [AccessTokensController, "show"])
+        router.patch("/access-tokens/:user_id/:access_token_id", [AccessTokensController, "update"])
+        router.delete("/access-tokens/:user_id/:access_token_id", [AccessTokensController, "destroy"])
 
         // Special routes to lock/unlock users
         router.patch("users/:user_id/lock", [UsersController, "lock"])
         router.patch("users/:user_id/unlock", [UsersController, "unlock"])
     })
     .prefix("/admin")
-    .use(middleware.auth({ guards: ["base64credentials", "token"] }))
+    .use(middleware.auth({ guards: ["base64credentials", "accessTokens"] }))
     .use(middleware.role({ role: "admin" }))
