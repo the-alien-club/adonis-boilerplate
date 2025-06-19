@@ -1,19 +1,9 @@
-import { hasRole } from "#lib/utils/roles"
 import { AccessTokenAbility, userAccessTokenHasAbility } from "#lib/utils/access_tokens"
 import User from "#models/user"
-import { BasePolicy } from "@adonisjs/bouncer"
 import { AuthorizerResponse } from "@adonisjs/bouncer/types"
+import BasePolicy from "#policies/templates/base_policy"
 
 export default class UserPolicy extends BasePolicy {
-    async before(user: User | null): Promise<AuthorizerResponse> {
-        if (user) {
-            const isAdmin = await hasRole(user, "admin")
-            return isAdmin
-        }
-
-        return false
-    }
-
     // Every user can view their own user object
     index(user: User): AuthorizerResponse {
         return userAccessTokenHasAbility(user, AccessTokenAbility.USER_READ)

@@ -1,5 +1,5 @@
 import { EC_LOCKED, EC_UNAUTHENTICATED, EC_UNAUTHORIZED } from "#lib/errors"
-import { hasRole } from "#lib/utils/roles"
+import { getUserRoles } from "#lib/utils/roles"
 import Role from "#models/role"
 import type { HttpContext } from "@adonisjs/core/http"
 import type { NextFn } from "@adonisjs/core/types/http"
@@ -35,9 +35,8 @@ export default class RoleMiddleware {
             })
         }
 
-        const userHasRole = await hasRole(ctx.auth.user, options.role)
-
-        if (!userHasRole) {
+        const userRoles = (await getUserRoles(ctx.auth.user)) || []
+        if (!userRoles.includes(options.role)) {
             return ctx.response.forbidden({
                 success: false,
                 message: "You do not have the required role to access this route.",

@@ -26,13 +26,14 @@ export async function getUserRoles(user: User) {
 
 /**
  * Check if the user has a specific role.
+ *
+ * Note that roles should be **preloaded** in the user model.
  * @param user The user (or null if the user is not authenticated).
  * @param roleName The role name.
  * @returns `true` if the user has the role, `false` otherwise.
  */
-export async function hasRole(user: User | null, roleName: string) {
+export function hasRole(user: User | null, roleName: string) {
     if (!user) return false
-
-    const roles = await getUserRoles(user)
-    return roles.includes(roleName)
+    if (!user.roles) return false
+    return user.roles.some((role) => role.name === roleName)
 }
