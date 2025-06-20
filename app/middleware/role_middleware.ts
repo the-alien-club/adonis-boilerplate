@@ -1,4 +1,4 @@
-import { EC_LOCKED, EC_UNAUTHENTICATED, EC_UNAUTHORIZED } from "#lib/errors"
+import { AppErrors } from "#lib/errors"
 import { getUserRoles } from "#lib/utils/roles"
 import Role from "#models/role"
 import type { HttpContext } from "@adonisjs/core/http"
@@ -23,7 +23,7 @@ export default class RoleMiddleware {
             return ctx.response.forbidden({
                 success: false,
                 message: "Unauthenticated user.",
-                error: EC_UNAUTHENTICATED,
+                error: AppErrors.UNAUTHENTICATED,
             })
         }
 
@@ -31,7 +31,7 @@ export default class RoleMiddleware {
             return ctx.response.forbidden({
                 success: false,
                 message: "Your account is locked. Please contact an administrator.",
-                error: EC_LOCKED,
+                error: AppErrors.LOCKED,
             })
         }
 
@@ -40,7 +40,7 @@ export default class RoleMiddleware {
             return ctx.response.forbidden({
                 success: false,
                 message: "You do not have the required role to access this route.",
-                error: EC_UNAUTHORIZED,
+                error: AppErrors.UNAUTHORIZED,
             })
         }
 

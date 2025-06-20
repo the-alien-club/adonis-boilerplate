@@ -1,11 +1,5 @@
-import {
-    EC_UNAUTHORIZED,
-    EC_USER_NOT_FOUND,
-    EC_USERNAME_ALREADY_EXISTS,
-    EC_YOU_CANNOT_LOCK_YOURSELF,
-    EC_YOU_CANNOT_UNLOCK_YOURSELF,
-} from "#lib/errors"
 import BaseController from "#controllers/templates/base_controller"
+import { AppErrors } from "#lib/errors"
 import { userLog } from "#lib/utils/logger"
 import User from "#models/user"
 import UserPolicy from "#policies/user_policy"
@@ -21,7 +15,7 @@ export default class UsersController extends BaseController {
      */
     async adminIndex({ bouncer, request }: HttpContext) {
         if (await bouncer.with(UserPolicy).denies("adminIndex")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const queries = request.qs()
@@ -42,14 +36,14 @@ export default class UsersController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         // Note: we will probably add a way to see other users with data restrictions,
         // That's why the 'show' method is here even if, for now, it restricts access
         // to current user only
         if (await bouncer.with(UserPolicy).denies("show", user)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         return this.successResponse(user)
@@ -62,17 +56,19 @@ export default class UsersController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         if (await bouncer.with(UserPolicy).denies("update", user)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const { username, firstName, lastName, description } = await request.validateUsing(userUpdateValidator)
 
         // Non-isolated
-        if (username && (await User.findBy("username", username))) return this.errorResponse(EC_USERNAME_ALREADY_EXISTS)
+        if (username && (await User.findBy("username", username))) {
+            return this.errorResponse(AppErrors.USERNAME_ALREADY_EXISTS)
+        }
 
         user.username = username || user.username
         user.firstName = firstName || user.firstName
@@ -91,11 +87,11 @@ export default class UsersController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         if (await bouncer.with(UserPolicy).denies("destroy", user)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         await user.delete()
@@ -109,15 +105,15 @@ export default class UsersController extends BaseController {
      */
     async lock({ auth, bouncer, params }: HttpContext) {
         if (await bouncer.with(UserPolicy).denies("lock")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const user = await User.find(params.user_id)
-        if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
 
         // Prevent admins from locking themselves
         if (user.id === auth.user?.id) {
-            return this.errorResponse(EC_YOU_CANNOT_LOCK_YOURSELF)
+            return this.errorResponse(AppErrors.YOU_CANNOT_LOCK_YOURSELF)
         }
 
         user.isLocked = true
@@ -132,15 +128,15 @@ export default class UsersController extends BaseController {
      */
     async unlock({ auth, bouncer, params }: HttpContext) {
         if (await bouncer.with(UserPolicy).denies("unlock")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const user = await User.find(params.user_id)
-        if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+        if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
 
         // Prevent admins from unlocking themselves
         if (user.id === auth.user?.id) {
-            return this.errorResponse(EC_YOU_CANNOT_UNLOCK_YOURSELF)
+            return this.errorResponse(AppErrors.YOU_CANNOT_UNLOCK_YOURSELF)
         }
 
         user.isLocked = false

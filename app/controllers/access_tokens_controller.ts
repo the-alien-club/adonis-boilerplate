@@ -1,4 +1,5 @@
 import BaseController from "#controllers/templates/base_controller"
+import { AppErrors } from "#lib/errors"
 import { userLog } from "#lib/utils/logger"
 import { AccessTokenScope, AccessTokenScopeAbilities, recoverAccessTokenScope } from "#lib/utils/access_tokens"
 import User from "#models/user"
@@ -7,12 +8,6 @@ import { AccessToken } from "@adonisjs/auth/access_tokens"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
 import { accessTokenCreationValidator, accessTokenUpdateValidator } from "#validators/access_token_validator"
-import {
-    EC_ACCESS_TOKEN_NOT_FOUND,
-    EC_INVALID_ACCESS_TOKEN_SCOPE,
-    EC_UNAUTHORIZED,
-    EC_USER_NOT_FOUND,
-} from "#lib/errors"
 
 export default class AccessTokensController extends BaseController {
     /**
@@ -22,11 +17,11 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         if (await bouncer.with(AccessTokenPolicy).denies("index", user)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const accessTokens = await User.accessTokens.all(user)
@@ -40,7 +35,7 @@ export default class AccessTokensController extends BaseController {
      */
     async adminIndex({ bouncer }: HttpContext) {
         if (await bouncer.with(AccessTokenPolicy).denies("adminIndex")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const users = await User.all()
@@ -74,16 +69,16 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         if (await bouncer.with(AccessTokenPolicy).denies("store", user)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         // Validate the scope
         if (scope && !Object.values(AccessTokenScope).includes(scope as AccessTokenScope)) {
-            return this.errorResponse(EC_INVALID_ACCESS_TOKEN_SCOPE)
+            return this.errorResponse(AppErrors.INVALID_ACCESS_TOKEN_SCOPE)
         }
 
         // Fallback to unrestricted scope in case no specific scope was provided
@@ -93,8 +88,8 @@ export default class AccessTokensController extends BaseController {
             {
                 name:
                     user.id === auth.user?.id
-                        ? `Access token issued manually (${scope}).`
-                        : `Access token issued by an administrator (${scope}).`,
+                        ? `Token issued manually (${scope}).`
+                        : `Token issued by an administrator (${scope}).`,
                 expiresIn: expiresIn || undefined,
             }
         )
@@ -118,14 +113,14 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         const accessToken = await User.accessTokens.find(user, params.access_token_id)
-        if (!accessToken) return this.errorResponse(EC_USER_NOT_FOUND)
+        if (!accessToken) return this.errorResponse(AppErrors.USER_NOT_FOUND)
 
         if (await bouncer.with(AccessTokenPolicy).denies("show", accessToken)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         return this.successResponse(accessToken)
@@ -138,16 +133,16 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         const { expiresIn } = await request.validateUsing(accessTokenUpdateValidator)
 
         const currentAccessToken = await User.accessTokens.find(user, params.access_token_id)
-        if (!currentAccessToken) return this.errorResponse(EC_ACCESS_TOKEN_NOT_FOUND)
+        if (!currentAccessToken) return this.errorResponse(AppErrors.ACCESS_TOKEN_NOT_FOUND)
 
         if (await bouncer.with(AccessTokenPolicy).denies("update", currentAccessToken)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const scope = recoverAccessTokenScope(currentAccessToken.abilities)
@@ -180,14 +175,14 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(EC_USER_NOT_FOUND)
+            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
 
         const currentAccessToken = await User.accessTokens.find(user, params.access_token_id)
-        if (!currentAccessToken) return this.errorResponse(EC_ACCESS_TOKEN_NOT_FOUND)
+        if (!currentAccessToken) return this.errorResponse(AppErrors.ACCESS_TOKEN_NOT_FOUND)
 
         if (await bouncer.with(AccessTokenPolicy).denies("destroy", currentAccessToken)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const scope = recoverAccessTokenScope(currentAccessToken.abilities)

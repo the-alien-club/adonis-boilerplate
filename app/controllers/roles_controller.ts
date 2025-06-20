@@ -1,20 +1,18 @@
-import { EC_ROLE_ALREADY_EXISTS, EC_ROLE_NOT_FOUND, EC_UNAUTHORIZED } from "#lib/errors"
 import BaseController from "#controllers/templates/base_controller"
 import type { HttpContext } from "@adonisjs/core/http"
 import RolePolicy from "#policies/role_policy"
 import Role from "#models/role"
 import User from "#models/user"
 import { roleCreationValidator, roleUpdateValidator } from "#validators/role_validator"
+import { AppErrors } from "#lib/errors"
 
 export default class RolesController extends BaseController {
     /**
      * Get all user's roles.
      */
     async index({ auth, bouncer, request }: HttpContext) {
-        if (!auth.user) this.errorResponse(EC_UNAUTHORIZED)
-
         if (await bouncer.with(RolePolicy).denies("index")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const queries = request.qs()
@@ -37,7 +35,7 @@ export default class RolesController extends BaseController {
      */
     async adminIndex({ bouncer, request }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("adminIndex")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const queries = request.qs()
@@ -56,15 +54,15 @@ export default class RolesController extends BaseController {
      */
     async store({ bouncer, request }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("store")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const { name, slug, description } = await request.validateUsing(roleCreationValidator)
 
         // Non-isolated
-        if (await Role.findBy("slug", slug)) return this.errorResponse(EC_ROLE_ALREADY_EXISTS)
+        if (await Role.findBy("slug", slug)) return this.errorResponse(AppErrors.ROLE_ALREADY_EXISTS)
 
-        const role = await Role.create({ name, slug, description })
+        const role = await Role.create({ name, description })
         return this.successResponse(role)
     }
 
@@ -73,10 +71,10 @@ export default class RolesController extends BaseController {
      */
     async show({ bouncer, params }: HttpContext) {
         const role = await Role.find(params.role_id)
-        if (!role) return this.errorResponse(EC_ROLE_NOT_FOUND)
+        if (!role) return this.errorResponse(AppErrors.ROLE_NOT_FOUND)
 
         if (await bouncer.with(RolePolicy).denies("show", role)) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         return this.successResponse(role)
@@ -87,11 +85,11 @@ export default class RolesController extends BaseController {
      */
     async update({ bouncer, request, params }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("update")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const role = await Role.find(params.role_id)
-        if (!role) return this.errorResponse(EC_ROLE_NOT_FOUND)
+        if (!role) return this.errorResponse(AppErrors.ROLE_NOT_FOUND)
 
         const { name, slug, description } = await request.validateUsing(roleUpdateValidator)
 
@@ -108,11 +106,11 @@ export default class RolesController extends BaseController {
      */
     async destroy({ bouncer, params }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("destroy")) {
-            return this.errorResponse(EC_UNAUTHORIZED)
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
         const role = await Role.find(params.role_id)
-        if (!role) return this.errorResponse(EC_ROLE_NOT_FOUND)
+        if (!role) return this.errorResponse(AppErrors.ROLE_NOT_FOUND)
 
         await role.delete()
         return this.successResponse(role)

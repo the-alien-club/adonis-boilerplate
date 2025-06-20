@@ -1,9 +1,9 @@
 import type { HttpContext } from "@adonisjs/core/http"
 import type { NextFn } from "@adonisjs/core/types/http"
 import type { Authenticators } from "@adonisjs/auth/types"
-import { EC_INVALID_ACCESS_TOKEN, EC_LOCKED, EC_UNAUTHENTICATED } from "#lib/errors"
 import logger from "@adonisjs/core/services/logger"
 import { userLog } from "#lib/utils/logger"
+import { AppErrors } from "#lib/errors"
 
 /**
  * Auth middleware is used authenticate HTTP requests and deny
@@ -25,7 +25,7 @@ export default class AuthMiddleware {
             return ctx.response.forbidden({
                 success: false,
                 message: "The access token that was provided is invalid or has expired.",
-                error: EC_INVALID_ACCESS_TOKEN,
+                error: AppErrors.INVALID_ACCESS_TOKEN,
             })
         }
 
@@ -33,7 +33,7 @@ export default class AuthMiddleware {
             return ctx.response.forbidden({
                 success: false,
                 message: "Unauthenticated user.",
-                error: EC_UNAUTHENTICATED,
+                error: AppErrors.UNAUTHENTICATED,
             })
         }
 
@@ -43,7 +43,7 @@ export default class AuthMiddleware {
             return ctx.response.forbidden({
                 success: false,
                 message: "Your account is locked. Please contact an administrator.",
-                error: EC_LOCKED,
+                error: AppErrors.LOCKED,
             })
         }
 
