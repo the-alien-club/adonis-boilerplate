@@ -10,7 +10,7 @@ import { userLog } from "#lib/utils/logger"
 import { AccessTokenScopeAbilities } from "#lib/utils/access_tokens"
 import Role from "#models/role"
 import User from "#models/user"
-import { credentialsValidator, userSignUpValidator } from "#validators/auth_validator"
+import { credentialsValidator, userRegistrationValidator } from "#validators/auth_validator"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
 
@@ -20,7 +20,7 @@ export default class AuthController extends BaseController {
      */
     async signup({ request }: HttpContext) {
         const { email, username, password, firstName, lastName, description } =
-            await request.validateUsing(userSignUpValidator)
+            await request.validateUsing(userRegistrationValidator)
 
         const obj = {
             isLocked: true,

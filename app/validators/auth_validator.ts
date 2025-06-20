@@ -4,7 +4,7 @@ import DB_CONSTANTS from "#lib/constants/db"
 /**
  * Validator for a signing up user.
  */
-export const userSignUpValidator = vine.compile(
+export const userRegistrationValidator = vine.compile(
     vine.object({
         email: vine.string().email(),
         username: vine

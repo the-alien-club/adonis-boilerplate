@@ -28,9 +28,9 @@ const DB_CONSTANTS = {
     MAX_NAME_LENGTH: 255,
 
     /**
-     * The regex pattern for a valid name.
+     * The regex pattern for a valid username.
      */
-    NAME_PATTERN: /^[a-z0-9_-]+$/,
+    USERNAME_REGEX: /^[a-z0-9_-]+$/,
 
     /**
      * The maximum length of a slug.
@@ -40,7 +40,7 @@ const DB_CONSTANTS = {
     /**
      * The regex pattern for a valid slug.
      */
-    SLUG_PATTERN: /^[a-z0-9_-]+$/,
+    SLUG_REGEX: /^[a-z0-9_-]+$/,
 
     /**
      * The maximum length of the description column for all tables.
