@@ -20,7 +20,7 @@ export default class extends BaseSeeder {
 
     async run() {
         // Note that the order here is the order of seeding
-        await this.seed(await import("#database/seeders/roles_seeder"))
         await this.seed(await import("#database/seeders/users_seeder"))
+        await this.seed(await import("#database/seeders/roles_seeder"))
     }
 }
