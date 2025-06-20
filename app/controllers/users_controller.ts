@@ -1,6 +1,7 @@
 import {
     EC_UNAUTHORIZED,
     EC_USER_NOT_FOUND,
+    EC_USERNAME_ALREADY_EXISTS,
     EC_YOU_CANNOT_LOCK_YOURSELF,
     EC_YOU_CANNOT_UNLOCK_YOURSELF,
 } from "#lib/errors"
@@ -68,7 +69,9 @@ export default class UsersController extends BaseController {
             return this.errorResponse(EC_UNAUTHORIZED)
         }
 
-        const { firstName, lastName, description } = await request.validateUsing(userUpdateValidator)
+        const { username, firstName, lastName, description } = await request.validateUsing(userUpdateValidator)
+
+        if (username && (await User.findBy("username", username))) return this.errorResponse(EC_USERNAME_ALREADY_EXISTS)
 
         user.firstName = firstName || user.firstName
         user.lastName = lastName || user.lastName

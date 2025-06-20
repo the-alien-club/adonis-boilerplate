@@ -20,10 +20,10 @@ export default class User extends compose(BaseModel, AuthFinder) {
     declare isLocked: boolean
 
     @column()
-    declare email: string | null
+    declare email: string
 
     @column()
-    declare username: string | null
+    declare username: string
 
     @column({ serializeAs: null })
     declare password: string
