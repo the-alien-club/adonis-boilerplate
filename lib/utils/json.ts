@@ -1,5 +1,5 @@
 /**
- * Formats a JSON string for display.
+ * Format a JSON object with indentation.
  * @param str The JSON string to format.
  * @returns The formatted JSON string.
  */
