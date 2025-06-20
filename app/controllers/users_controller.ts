@@ -71,12 +71,13 @@ export default class UsersController extends BaseController {
 
         const { username, firstName, lastName, description } = await request.validateUsing(userUpdateValidator)
 
+        // Non-isolated
         if (username && (await User.findBy("username", username))) return this.errorResponse(EC_USERNAME_ALREADY_EXISTS)
 
+        user.username = username || user.username
         user.firstName = firstName || user.firstName
         user.lastName = lastName || user.lastName
         user.description = description || user.description
-
         await user.save()
 
         logger.debug(userLog(user, "updated successfully"))
