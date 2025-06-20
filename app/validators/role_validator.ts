@@ -6,7 +6,7 @@ import vine from "@vinejs/vine"
  */
 export const roleCreationValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).regex(DB_CONSTANTS.NAME_PATTERN),
+        name: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).regex(DB_CONSTANTS.USERNAME_REGEX),
         slug: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_SLUG_LENGTH).regex(DB_CONSTANTS.SLUG_REGEX),
         description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH),
     })

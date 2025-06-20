@@ -11,7 +11,7 @@ export const userRegistrationValidator = vine.compile(
             .string()
             .minLength(DB_CONSTANTS.MIN_USERNAME_LENGTH)
             .maxLength(DB_CONSTANTS.MAX_USERNAME_LENGTH)
-            .regex(DB_CONSTANTS.NAME_PATTERN),
+            .regex(DB_CONSTANTS.USERNAME_REGEX),
         password: vine.string().minLength(DB_CONSTANTS.MIN_PASSWORD_LENGTH).maxLength(DB_CONSTANTS.MAX_PASSWORD_LENGTH),
         firstName: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).optional(),
         lastName: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).optional(),
