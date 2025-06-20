@@ -36,7 +36,7 @@ export default class AuthController extends BaseController {
 
         const user = await User.create(obj)
 
-        const defaultRole = await Role.findBy("name", "user")
+        const defaultRole = await Role.findBy("slug", "user")
         if (defaultRole) await user.related("roles").attach([defaultRole.id])
         else this.errorResponse(EC_ROLE_NOT_FOUND, null, "The default role for users was not found.")
 

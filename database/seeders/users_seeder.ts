@@ -1,4 +1,3 @@
-import Role from "#models/role"
 import User from "#models/user"
 import env from "#start/env"
 import { BaseSeeder } from "@adonisjs/lucid/seeders"
@@ -20,10 +19,5 @@ export default class extends BaseSeeder {
                 imageUrl: "https://example.com/default-admin-image.png", // Replace with a valid URL or leave null
             },
         ])
-
-        // Link the default administrator to the 'admin' role using the pivot table
-        const admin = await User.findBy("email", process.env.DEFAULT_ADMIN_EMAIL)
-        const adminRole = await Role.findBy("name", "admin")
-        await admin?.related("roles").attach([adminRole?.id as number])
     }
 }

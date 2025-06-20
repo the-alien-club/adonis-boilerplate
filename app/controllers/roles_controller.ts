@@ -59,12 +59,12 @@ export default class RolesController extends BaseController {
             return this.errorResponse(EC_UNAUTHORIZED)
         }
 
-        const { name, description } = await request.validateUsing(roleCreationValidator)
+        const { name, slug, description } = await request.validateUsing(roleCreationValidator)
 
         // Non-isolated
-        if (await Role.findBy("name", name)) return this.errorResponse(EC_ROLE_ALREADY_EXISTS)
+        if (await Role.findBy("slug", slug)) return this.errorResponse(EC_ROLE_ALREADY_EXISTS)
 
-        const role = await Role.create({ name, description })
+        const role = await Role.create({ name, slug, description })
         return this.successResponse(role)
     }
 
@@ -93,9 +93,10 @@ export default class RolesController extends BaseController {
         const role = await Role.find(params.role_id)
         if (!role) return this.errorResponse(EC_ROLE_NOT_FOUND)
 
-        const { name, description } = await request.validateUsing(roleUpdateValidator)
+        const { name, slug, description } = await request.validateUsing(roleUpdateValidator)
 
         role.name = name || role.name
+        role.slug = slug || role.slug
         role.description = description || role.description
         await role.save()
 

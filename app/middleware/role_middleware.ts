@@ -16,8 +16,8 @@ export default class RoleMiddleware {
         ctx: HttpContext,
         next: NextFn,
         options: {
-            role: Role["name"]
-        } = { role: "admin" }
+            role: Role["slug"]
+        } = { role: "administrator" }
     ) {
         if (!ctx.auth.isAuthenticated) {
             return ctx.response.forbidden({
