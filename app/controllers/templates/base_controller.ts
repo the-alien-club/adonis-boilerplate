@@ -1,8 +1,6 @@
-import { AdditionalData, ErrorCode } from "#lib/errors"
-import { inject } from "@adonisjs/core"
 import { HttpContext } from "@adonisjs/core/http"
+import { ErrorObj, FailedRequest } from "#types/requests"
 
-@inject()
 export default class BaseController {
     constructor(protected ctx: HttpContext) {}
 
@@ -45,10 +43,10 @@ export default class BaseController {
      * @param data Additional data to be sent in the response (optional).
      * @param message Error message to be sent in the response (optional, defaults to the internal error message).
      */
-    async errorResponse(error: ErrorCode, data: AdditionalData | null = null, message?: string) {
-        const response: { success: boolean; message: string; error: ErrorCode } = {
+    async errorResponse(error: ErrorObj, data: unknown | null = null, message?: string) {
+        const response: FailedRequest = {
             success: false,
-            message: message || error.message,
+            message: message ?? error.message,
             error: this._checkDataValidity(data) ? { ...error, data } : error,
         }
 
