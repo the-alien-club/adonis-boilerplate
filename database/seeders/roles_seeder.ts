@@ -14,13 +14,11 @@ export default class extends BaseSeeder {
                 name: "Administrator",
                 slug: "administrator",
                 description: "All permissions are granted to this role.",
-                registrantId: admin?.id || 0, // Link to the default administrator
             },
             {
                 name: "User",
                 slug: "user",
                 description: "The default role for all users.",
-                registrantId: admin?.id || 0, // Link to the default administrator
             },
         ])
 

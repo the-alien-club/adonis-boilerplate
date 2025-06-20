@@ -17,12 +17,6 @@ export default class Role extends BaseModel {
     declare description: string
 
     // Relationships
-    // Belongs to a user (registrant)
-    @column()
-    declare registrantId: number
-    @belongsTo(() => User, { foreignKey: "registrant_id" })
-    declare registrant: BelongsTo<typeof User>
-
     // Many-to-many relationship with the `users` table
     @manyToMany(() => User, {
         pivotTable: "user_roles",

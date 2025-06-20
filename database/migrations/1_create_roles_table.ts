@@ -12,10 +12,6 @@ export default class extends BaseSchema {
             table.string("slug", DB_CONSTANTS.MAX_SLUG_LENGTH).notNullable().unique()
             table.string("description", DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).notNullable()
 
-            // Relationships
-            // Belongs to a user (registrant)
-            table.integer("registrant_id").notNullable().unsigned().references("users.id").onDelete("CASCADE")
-
             // Dates
             table.timestamp("created_at", { useTz: true }).notNullable()
             table.timestamp("updated_at", { useTz: true }).notNullable()
