@@ -8,7 +8,7 @@ import type { ManyToMany } from "@adonisjs/lucid/types/relations"
 import Role from "#models/role"
 
 const AuthFinder = withAuthFinder(() => hash.use("scrypt"), {
-    uids: ["email", "username"],
+    uids: ["email"],
     passwordColumnName: "password",
 })
 

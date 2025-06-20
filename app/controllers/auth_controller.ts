@@ -10,7 +10,7 @@ import { userLog } from "#lib/utils/logger"
 import { AccessTokenScopeAbilities } from "#lib/utils/access_tokens"
 import Role from "#models/role"
 import User from "#models/user"
-import { credentialsValidator, userSigningUpValidator } from "#validators/auth_validator"
+import { credentialsValidator, userSignUpValidator } from "#validators/auth_validator"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
 
@@ -19,13 +19,16 @@ export default class AuthController extends BaseController {
      * Main user registration route.
      */
     async signup({ request }: HttpContext) {
-        const { email, username, password, description } = await request.validateUsing(userSigningUpValidator)
+        const { email, username, password, firstName, lastName, description } =
+            await request.validateUsing(userSignUpValidator)
 
         const obj = {
             isLocked: true,
             email,
             username,
             password,
+            firstName: firstName || null,
+            lastName: lastName || null,
             description: description || null,
         }
 
@@ -49,13 +52,11 @@ export default class AuthController extends BaseController {
      * Note that `expiresIn` is optional and is expressed in seconds.
      */
     async signin({ request }: HttpContext) {
-        const { email, username, password, expiresIn } = await request.validateUsing(credentialsValidator)
+        const { email, password, expiresIn } = await request.validateUsing(credentialsValidator)
 
         let user: User | null
-
         try {
-            if (email) user = await User.verifyCredentials(email, password)
-            else user = await User.verifyCredentials(username as string, password)
+            user = await User.verifyCredentials(email, password)
         } catch (error) {
             return this.errorResponse(EC_INVALID_CREDENTIALS, null, "Invalid credentials.")
         }

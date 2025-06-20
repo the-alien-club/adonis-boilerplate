@@ -1,7 +1,5 @@
 import {
-    EC_EMAIL_ALREADY_EXISTS,
     EC_UNAUTHORIZED,
-    EC_USERNAME_ALREADY_EXISTS,
     EC_USER_NOT_FOUND,
     EC_YOU_CANNOT_LOCK_YOURSELF,
     EC_YOU_CANNOT_UNLOCK_YOURSELF,
@@ -70,20 +68,12 @@ export default class UsersController extends BaseController {
             return this.errorResponse(EC_UNAUTHORIZED)
         }
 
-        const { email, username, password, firstName, lastName, description } =
-            await request.validateUsing(userUpdateValidator)
+        const { firstName, lastName, description } = await request.validateUsing(userUpdateValidator)
 
-        // Non-isolated
-        // Both email and username are unique, so we need to check if the user already exists.
-        if (email && (await User.findBy("email", email))) return this.errorResponse(EC_EMAIL_ALREADY_EXISTS)
-        if (username && (await User.findBy("username", username))) return this.errorResponse(EC_USERNAME_ALREADY_EXISTS)
-
-        user.email = email || user.email
-        user.username = username || user.username
-        user.password = password || user.password
         user.firstName = firstName || user.firstName
         user.lastName = lastName || user.lastName
         user.description = description || user.description
+
         await user.save()
 
         logger.debug(userLog(user, "updated successfully"))
