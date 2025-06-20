@@ -8,10 +8,20 @@ export function formatJson(str: string): string {
 }
 
 /**
- * Stringifies an object to JSON with support for BigInt.
- * @param obj The object to serialize.
- * @returns The JSON string.
+ * Stringify a JSON object with support for BigInt and functions.
+ * @param object The object to stringify.
+ * @param indent The number of spaces to indent (optional, defaults to 4)
+ * @returns The stringified JSON object.
  */
-export function stringify(obj: object): any {
-    return JSON.stringify(obj, (_, value) => (typeof value === "bigint" ? value.toString() : value))
+export function stringify(object: unknown, indent = 4): string {
+    return JSON.stringify(
+        object,
+        (_, value) => {
+            if (typeof value === "function") return value.toString()
+            if (typeof value === "bigint") return value.toString()
+
+            return value
+        },
+        indent
+    )
 }
