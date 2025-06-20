@@ -1,5 +1,5 @@
 /**
- * Database constants for user and content validation.
+ * Database-related constants for user and content validation.
  */
 const DB_CONSTANTS = {
     /**
@@ -25,12 +25,22 @@ const DB_CONSTANTS = {
     /**
      * The maximum length of the name column for all tables.
      */
-    MAX_NAME_LENGTH: 64,
+    MAX_NAME_LENGTH: 255,
 
     /**
      * The regex pattern for a valid name.
      */
     NAME_PATTERN: /^[a-z0-9_-]+$/,
+
+    /**
+     * The maximum length of a slug.
+     */
+    MAX_SLUG_LENGTH: 255,
+
+    /**
+     * The regex pattern for a valid slug.
+     */
+    SLUG_PATTERN: /^[a-z0-9_-]+$/,
 
     /**
      * The maximum length of the description column for all tables.
@@ -41,6 +51,11 @@ const DB_CONSTANTS = {
      * The maximum length of a URL.
      */
     MAX_URL_LENGTH: 2048,
+
+    /**
+     * The maximum length of a mime type.
+     */
+    MAX_MIME_TYPE_LENGTH: 255,
 }
 
 export default DB_CONSTANTS

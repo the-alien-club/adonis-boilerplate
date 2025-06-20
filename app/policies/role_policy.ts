@@ -1,11 +1,20 @@
 import User from "#models/user"
 import { AuthorizerResponse } from "@adonisjs/bouncer/types"
 import { hasRole } from "#lib/utils/roles"
+import { BasePolicy } from "@adonisjs/bouncer"
 import { AccessTokenAbility, userAccessTokenHasAbility } from "#lib/utils/access_tokens"
 import Role from "#models/role"
-import BasePolicy from "#policies/templates/base_policy"
 
 export default class AbiPolicy extends BasePolicy {
+    async before(user: User | null): Promise<AuthorizerResponse> {
+        if (user) {
+            const isAdmin = await hasRole(user, "admin")
+            return isAdmin
+        }
+
+        return false
+    }
+
     // Admin only
     // Only admins can view all roles
     index(): AuthorizerResponse {
@@ -26,7 +35,7 @@ export default class AbiPolicy extends BasePolicy {
 
     // Every user can view their own role
     show(user: User | null, role: Role): AuthorizerResponse {
-        return userAccessTokenHasAbility(user, AccessTokenAbility.ROLE_READ) && hasRole(user, role.name)
+        return userAccessTokenHasAbility(user, AccessTokenAbility.ROLE_READ) && hasRole(user, role.slug)
     }
 
     // Admin only

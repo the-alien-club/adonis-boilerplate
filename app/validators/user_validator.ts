@@ -19,6 +19,8 @@ export const userUpdateValidator = vine.compile(
             .minLength(DB_CONSTANTS.MIN_PASSWORD_LENGTH)
             .maxLength(DB_CONSTANTS.MAX_PASSWORD_LENGTH)
             .optional(),
+        firstName: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).optional(),
+        lastName: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).optional(),
         description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).optional(),
     })
 )

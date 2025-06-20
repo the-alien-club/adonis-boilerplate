@@ -1,23 +1,31 @@
 import User from "#models/user"
-import { BaseModel, column, manyToMany } from "@adonisjs/lucid/orm"
-import type { ManyToMany } from "@adonisjs/lucid/types/relations"
+import { BaseModel, belongsTo, column, manyToMany } from "@adonisjs/lucid/orm"
+import type { BelongsTo, ManyToMany } from "@adonisjs/lucid/types/relations"
 
 import { DateTime } from "luxon"
 
 export default class Role extends BaseModel {
     @column({ isPrimary: true })
     declare id: number
-
     @column()
     declare name: string
+
+    @column()
+    declare slug: string
 
     @column()
     declare description: string
 
     // Relationships
+    // Belongs to a user (registrant)
+    @column()
+    declare registrantId: number
+    @belongsTo(() => User, { foreignKey: "registrant_id" })
+    declare registrant: BelongsTo<typeof User>
+
     // Many-to-many relationship with the `users` table
     @manyToMany(() => User, {
-        pivotTable: "user_roles_pivot",
+        pivotTable: "user_roles",
         pivotForeignKey: "role_id",
         pivotRelatedForeignKey: "user_id",
         pivotTimestamps: true,

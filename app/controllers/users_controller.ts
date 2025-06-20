@@ -70,7 +70,8 @@ export default class UsersController extends BaseController {
             return this.errorResponse(EC_UNAUTHORIZED)
         }
 
-        const { email, username, password, description } = await request.validateUsing(userUpdateValidator)
+        const { email, username, password, firstName, lastName, description } =
+            await request.validateUsing(userUpdateValidator)
 
         // Non-isolated
         // Both email and username are unique, so we need to check if the user already exists.
@@ -80,6 +81,8 @@ export default class UsersController extends BaseController {
         user.email = email || user.email
         user.username = username || user.username
         user.password = password || user.password
+        user.firstName = firstName || user.firstName
+        user.lastName = lastName || user.lastName
         user.description = description || user.description
         await user.save()
 

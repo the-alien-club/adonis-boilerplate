@@ -43,7 +43,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
     // Relationships
     // Many-to-many relationship with the `roles` table
     @manyToMany(() => Role, {
-        pivotTable: "user_roles_pivot",
+        pivotTable: "user_roles",
         pivotForeignKey: "user_id",
         pivotRelatedForeignKey: "role_id",
         pivotTimestamps: true,
