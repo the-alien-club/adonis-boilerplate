@@ -19,10 +19,11 @@ export default await Env.create(new URL("../", import.meta.url), {
     APP_KEY: Env.schema.string(),
 
     // PostgreSQL database
-    DATABASE_URL: Env.schema.string(),
+    DATABASE_URL: Env.schema.string({ format: "url" }),
 
     // Redis database
-    REDIS_URL: Env.schema.string(),
+    REDIS_URL: Env.schema.string({ format: "url" }),
+    REDIS_DB: Env.schema.number(),
 
     // Default administrator
     DEFAULT_ADMIN_EMAIL: Env.schema.string({ format: "email" }),
