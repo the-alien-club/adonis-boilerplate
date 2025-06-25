@@ -25,7 +25,7 @@ export default class WorkersProvider {
      * Starts all the workers just before the application is ready to accept incoming requests.
      * also initializes the stacks queue cron job.
      *
-     * More info: https://docs.adonisjs.com/guides/concepts/service-providers#ready
+     * More info: https://docs.adonisjs.com/guides/concepts/service-providers#start
      */
     async starts() {
         if (process.env.NO_LC === "true") {
