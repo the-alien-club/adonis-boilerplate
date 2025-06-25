@@ -4,11 +4,6 @@ import { AuthorizerResponse } from "@adonisjs/bouncer/types"
 import BasePolicy from "#policies/templates/base_policy"
 
 export default class UserPolicy extends BasePolicy {
-    // Every user can view their own user object
-    index(user: User): AuthorizerResponse {
-        return userAccessTokenHasAbility(user, AccessTokenAbility.USER_READ)
-    }
-
     // Admin only
     // Only admins can view all users
     adminIndex(): AuthorizerResponse {
