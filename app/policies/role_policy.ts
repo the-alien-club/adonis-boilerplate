@@ -24,7 +24,7 @@ export default class AbiPolicy extends BasePolicy {
         return false
     }
 
-    // Every user can view their own role
+    // Every user can view one of their own role
     show(user: User | null, role: Role): AuthorizerResponse {
         return userAccessTokenHasAbility(user, AccessTokenAbility.ROLE_READ) && hasRole(user, role.slug)
     }
