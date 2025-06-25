@@ -22,12 +22,12 @@ export default class WorkersProvider {
     }
 
     /**
-     * Starts all the workers during when the application is ready to accept incoming requests.
+     * Starts all the workers just before the application is ready to accept incoming requests.
      * also initializes the stacks queue cron job.
      *
      * More info: https://docs.adonisjs.com/guides/concepts/service-providers#ready
      */
-    async ready() {
+    async starts() {
         if (process.env.NO_LC === "true") {
             // Ensures that the queue cron job is removed when running ace commands
             await cronQueue.removeRepeatable("cronSeconds", this.cronJobOptions.repeat)
