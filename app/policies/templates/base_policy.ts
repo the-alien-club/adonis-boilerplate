@@ -7,7 +7,7 @@ export default class BasePolicy extends AdonisBasePolicy {
     async before(user: User | null): Promise<AuthorizerResponse> {
         if (user) {
             if (!user.roles) await user.load("roles")
-            const isAdmin = hasRole(user, "admin")
+            const isAdmin = hasRole(user, "administrator")
             return isAdmin
         }
 

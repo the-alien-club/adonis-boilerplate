@@ -81,4 +81,4 @@ router
     })
     .prefix("/admin")
     .use(middleware.auth({ guards: ["base64credentials", "accessTokens"] }))
-    .use(middleware.role({ role: "admin" }))
+    .use(middleware.role({ role: "administrator" }))
