@@ -1,10 +1,10 @@
 import { middleware } from "#start/kernel"
 import router from "@adonisjs/core/services/router"
 
+const AccessTokensController = () => import("#controllers/access_tokens_controller")
 const AuthController = () => import("#controllers/auth_controller")
 const GeneralController = () => import("#controllers/general_controller")
 const RolesController = () => import("#controllers/roles_controller")
-const AccessTokensController = () => import("#controllers/access_tokens_controller")
 const UsersController = () => import("#controllers/users_controller")
 
 // ============
