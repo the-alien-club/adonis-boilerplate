@@ -7,7 +7,7 @@ export default class extends BaseSeeder {
     static environment = ["development", "testing", "production"]
 
     async run() {
-        const admin = await User.findBy("email", env.get("DEFAULT_ADMIN_EMAIL"))
+        const defaultAdmin = await User.findBy("email", env.get("DEFAULT_ADMIN_EMAIL"))
 
         await Role.createMany([
             {
@@ -24,6 +24,6 @@ export default class extends BaseSeeder {
 
         // Link the default administrator to the 'administrator' role using the pivot table
         const adminRole = await Role.findBy("slug", "administrator")
-        await admin?.related("roles").attach([adminRole?.id as number])
+        await defaultAdmin?.related("roles").attach([adminRole?.id as number])
     }
 }
