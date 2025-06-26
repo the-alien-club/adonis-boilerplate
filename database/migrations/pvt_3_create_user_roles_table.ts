@@ -1,6 +1,6 @@
 import { BaseSchema } from "@adonisjs/lucid/schema"
 
-export default class UserRolesTable extends BaseSchema {
+export default class PvtUserRolesTable extends BaseSchema {
     protected tableName = "user_roles"
 
     async up() {
