@@ -2,7 +2,7 @@ import User from "#models/user"
 import env from "#start/env"
 import { BaseSeeder } from "@adonisjs/lucid/seeders"
 
-export default class extends BaseSeeder {
+export default class UsersSeeder extends BaseSeeder {
     static environment = ["development", "testing", "production"]
 
     async run() {

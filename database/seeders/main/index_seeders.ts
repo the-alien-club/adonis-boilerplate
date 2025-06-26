@@ -2,7 +2,7 @@ import { BaseSeeder } from "@adonisjs/lucid/seeders"
 import app from "@adonisjs/core/services/app"
 import logger from "@adonisjs/core/services/logger"
 
-export default class extends BaseSeeder {
+export default class IndexSeeders extends BaseSeeder {
     private async seed(Seeder: { default: typeof BaseSeeder }) {
         // Do not run when not in a environment specified in Seeder
         if (

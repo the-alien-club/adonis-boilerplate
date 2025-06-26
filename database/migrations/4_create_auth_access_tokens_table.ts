@@ -1,7 +1,7 @@
 import DB_CONSTANTS from "#lib/constants/db"
 import { BaseSchema } from "@adonisjs/lucid/schema"
 
-export default class extends BaseSchema {
+export default class AuthAccessTokensTable extends BaseSchema {
     protected tableName = "auth_access_tokens"
 
     async up() {
