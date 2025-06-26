@@ -38,7 +38,6 @@
             "#start/*": ["./start/*"],
             "#tests/*": ["./tests/*"],
             "#types/*": ["./types/*"],
-            "#abilities": ["./app/abilities/*"],
             "#controllers": ["./app/controllers/*"],
             "#exceptions": ["./app/exceptions/*"],
             "#jobs": ["./app/jobs/*"],
