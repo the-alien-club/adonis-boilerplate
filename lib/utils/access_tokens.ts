@@ -16,12 +16,12 @@ export enum AccessTokenAbility {
     // Unrestricted / all abilities
     UNRESTRICTED = "*",
 
-    // Roles
-    ROLE_READ = "role:read",
-
     // Access tokens
     ACCESS_TOKEN_READ = "access-token:read",
     ACCESS_TOKEN_WRITE = "access-token:write",
+
+    // Roles
+    ROLE_READ = "role:read",
 
     // Users
     USER_READ = "user:read",
