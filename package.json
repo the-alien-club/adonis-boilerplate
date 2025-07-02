@@ -16,23 +16,6 @@
     "bugs": {
         "url": "https://github.com/the-alien-club/adonis-boilerplate/issues"
     },
-    "scripts": {
-        "v-bump": "yarn version --patch",
-        "migration:fresh": "cross-env NO_LC=true node ace migration:refresh --seed",
-        "migration:run": "cross-env NO_LC=true node ace migration:run",
-        "db:wipe": "cross-env NO_LC=true node ace db:wipe",
-        "db:seed": "cross-env NO_LC=true node ace db:seed",
-        "generate:key": "cross-env NO_LC=true node ace generate:key",
-        "knip": "knip",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
-        "format": "prettier --write .",
-        "test:sandbox": "tsx ./tests/sandbox.ts",
-        "test:unit": "node ace test unit",
-        "dev": "node ace serve --watch",
-        "build": "cross-env NO_LC=true node ace build",
-        "start": "node bin/server.js"
-    },
     "imports": {
         "#config/*": "./config/*.js",
         "#database/*": "./database/*.js",
@@ -49,6 +32,23 @@
         "#queues/*": "./app/queues/*.js",
         "#validators/*": "./app/validators/*.js",
         "#workers/*": "./app/workers/*.js"
+    },
+    "scripts": {
+        "v-bump": "yarn version --patch",
+        "migration:fresh": "cross-env NO_LC=true node ace migration:refresh --seed",
+        "migration:run": "cross-env NO_LC=true node ace migration:run",
+        "db:wipe": "cross-env NO_LC=true node ace db:wipe",
+        "db:seed": "cross-env NO_LC=true node ace db:seed",
+        "generate:key": "cross-env NO_LC=true node ace generate:key",
+        "knip": "knip",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write .",
+        "test:sandbox": "tsx ./tests/sandbox.ts",
+        "test:unit": "node ace test unit",
+        "dev": "node ace serve --watch",
+        "build": "cross-env NO_LC=true node ace build",
+        "start": "node bin/server.js"
     },
     "dependencies": {
         "@adonisjs/auth": "^9.4.0",
