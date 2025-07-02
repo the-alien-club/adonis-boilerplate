@@ -16,16 +16,6 @@ export default class AuthController extends BaseController {
         const { email, username, password, firstName, lastName, description } =
             await request.validateUsing(userRegistrationValidator)
 
-        const obj = {
-            isLocked: true,
-            email,
-            username,
-            password,
-            firstName: firstName || null,
-            lastName: lastName || null,
-            description: description || null,
-        }
-
         // Non-isolated
         // Both email and username are unique, so we need to check if the user already exists.
         if (email && (await User.findBy("email", email))) return this.errorResponse(AppErrors.EMAIL_ALREADY_EXISTS)
@@ -33,7 +23,15 @@ export default class AuthController extends BaseController {
             return this.errorResponse(AppErrors.USERNAME_ALREADY_EXISTS)
         }
 
-        const user = await User.create(obj)
+        const user = await User.create({
+            isLocked: true,
+            email,
+            username,
+            password,
+            firstName: firstName || null,
+            lastName: lastName || null,
+            description: description || null,
+        })
 
         const defaultRole = await Role.findBy("slug", "user")
         if (defaultRole) await user.related("roles").attach([defaultRole.id])

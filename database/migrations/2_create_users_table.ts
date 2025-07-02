@@ -8,7 +8,7 @@ export default class UsersTable extends BaseSchema {
         this.schema.createTable(this.tableName, (table) => {
             table.increments("id").primary()
 
-            table.boolean("is_locked").notNullable().defaultTo(true)
+            table.boolean("is_locked").notNullable()
             table.string("email").nullable().unique()
             table.string("username", DB_CONSTANTS.MAX_USERNAME_LENGTH).nullable().unique()
             table.string("password", DB_CONSTANTS.MAX_PASSWORD_LENGTH).notNullable()
