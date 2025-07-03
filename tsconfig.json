@@ -38,16 +38,16 @@
             "#start/*": ["./start/*"],
             "#tests/*": ["./tests/*"],
             "#types/*": ["./types/*"],
-            "#controllers": ["./app/controllers/*"],
-            "#exceptions": ["./app/exceptions/*"],
-            "#jobs": ["./app/jobs/*"],
-            "#middleware": ["./app/middleware/*"],
-            "#models": ["./app/models/*"],
-            "#policies": ["./app/policies/*"],
-            "#providers": ["./app/providers/*"],
-            "#queues": ["./app/queues/*"],
-            "#validators": ["./app/validators/*"],
-            "#workers": ["./app/workers/*"]
+            "#controllers/*": ["./app/controllers/*"],
+            "#exceptions/*": ["./app/exceptions/*"],
+            "#jobs/*": ["./app/jobs/*"],
+            "#middleware/*": ["./app/middleware/*"],
+            "#models/*": ["./app/models/*"],
+            "#policies/*": ["./app/policies/*"],
+            "#providers/*": ["./app/providers/*"],
+            "#queues/*": ["./app/queues/*"],
+            "#validators/*": ["./app/validators/*"],
+            "#workers/*": ["./app/workers/*"]
         },
         // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
         // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
