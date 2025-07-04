@@ -1,4 +1,5 @@
 import { BaseErrors } from "#lib/utils/error_handling"
+import { ErrorObj } from "#types/requests"
 
 /**
  * Contains all the available errors for the application.
@@ -119,4 +120,4 @@ export const AppErrors = {
         message: "This role already exists.",
         data: null,
     },
-}
+} as const satisfies Record<string, ErrorObj>

@@ -129,94 +129,94 @@ export function formatMessageAsStringifiedError(message: string, error?: unknown
  *
  * export const AppErrors = {
  *     ...BaseErrors,
- *     // Add your custom errors here
+ *     //=====//
+ *	    // 401 //
+ *	    //=====//
+ *     BLAH_BLAH: {
+ *         status: 401,
+ *         name: "BlahBlah",
+ *         message: "Blah blah blah.",
+ *         data: null,
+ *     },
  * }
  * ```
  */
 export const BaseErrors = {
-    //=======
-    //  400
-    //=======
+    //=====//
+    // 400 //
+    //=====//
     BAD_REQUEST: {
         status: 400,
         name: "BadRequest",
         message: "Bad request.",
         data: null,
     },
-
-    //=======
-    //  401
-    //=======
+    //=====//
+    // 401 //
+    //=====//
     UNAUTHORIZED: {
         status: 401,
         name: "Unauthorized",
         message: "Unauthorized.",
         data: null,
     },
-
-    //=======
-    //  402
-    //=======
+    //=====//
+    // 402 //
+    //=====//
     PAYMENT_REQUIRED: {
         status: 402,
         name: "PaymentRequired",
         message: "Payment required.",
         data: null,
     },
-
-    //=======
-    //  403
-    //=======
+    //=====//
+    // 403 //
+    //=====//
     FORBIDDEN: {
         status: 403,
         name: "Forbidden",
         message: "Forbidden.",
         data: null,
     },
-
-    //=======
-    //  404
-    //=======
+    //=====//
+    // 404 //
+    //=====//
     NOT_FOUND: {
         status: 404,
         name: "NotFound",
         message: "Not found.",
         data: null,
     },
-
-    //=======
-    //  405
-    //=======
+    //=====//
+    // 405 //
+    //=====//
     METHOD_NOT_ALLOWED: {
         status: 405,
         name: "MethodNotAllowed",
         message: "Method not allowed.",
         data: null,
     },
-
-    //=======
-    //  408
-    //=======
+    //=====//
+    // 408 //
+    //=====//
     REQUEST_TIMEOUT: {
         status: 408,
         name: "RequestTimeout",
         message: "Request timed out.",
         data: null,
     },
-
-    //=======
-    //  409
-    //=======
+    //=====//
+    // 409 //
+    //=====//
     CONFLICT: {
         status: 409,
         name: "Conflict",
         message: "Conflict.",
         data: null,
     },
-
-    //=======
-    //  500
-    //=======
+    //=====//
+    // 500 //
+    //=====//
     INTERNAL_SERVER_ERROR: {
         status: 500,
         name: "InternalServerError",
@@ -229,20 +229,18 @@ export const BaseErrors = {
         message: "A function reserved for the backend is running on the client.",
         data: null,
     },
-
-    //=======
-    //  501
-    //=======
+    //=====//
+    // 501 //
+    //=====//
     NOT_IMPLEMENTED: {
         status: 501,
         name: "NotImplemented",
         message: "Not implemented.",
         data: null,
     },
-
-    //=======
-    //  509
-    //=======
+    //=====//
+    // 509 //
+    //=====//
     BANDWIDTH_LIMIT_EXCEEDED: {
         status: 509,
         name: "BandwidthLimitExceeded",
