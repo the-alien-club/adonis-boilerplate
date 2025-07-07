@@ -17,7 +17,13 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
+            if (!user) {
+                return this.errorResponse(
+                    AppErrors.USER_NOT_FOUND,
+                    undefined,
+                    `The user with ID ${params.user_id} could not be found.`
+                )
+            }
         }
 
         if (await bouncer.with(AccessTokenPolicy).denies("index", user)) {
@@ -69,7 +75,13 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
+            if (!user) {
+                return this.errorResponse(
+                    AppErrors.USER_NOT_FOUND,
+                    undefined,
+                    `The user with ID ${params.user_id} could not be found.`
+                )
+            }
         }
 
         if (await bouncer.with(AccessTokenPolicy).denies("store", user)) {
@@ -113,11 +125,17 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
+            if (!user) {
+                return this.errorResponse(
+                    AppErrors.USER_NOT_FOUND,
+                    undefined,
+                    `The user with ID ${params.user_id} could not be found.`
+                )
+            }
         }
 
         const accessToken = await User.accessTokens.find(user, params.access_token_id)
-        if (!accessToken) return this.errorResponse(AppErrors.USER_NOT_FOUND)
+        if (!accessToken) return this.errorResponse(AppErrors.ACCESS_TOKEN_NOT_FOUND)
 
         if (await bouncer.with(AccessTokenPolicy).denies("show", accessToken)) {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
@@ -133,7 +151,13 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
+            if (!user) {
+                return this.errorResponse(
+                    AppErrors.USER_NOT_FOUND,
+                    undefined,
+                    `The user with ID ${params.user_id} could not be found.`
+                )
+            }
         }
 
         const { expiresIn } = await request.validateUsing(accessTokenUpdateValidator)
@@ -175,7 +199,13 @@ export default class AccessTokensController extends BaseController {
         let user: User | null = auth.user as User
         if (params.user_id) {
             user = await User.find(params.user_id)
-            if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
+            if (!user) {
+                return this.errorResponse(
+                    AppErrors.USER_NOT_FOUND,
+                    undefined,
+                    `The user with ID ${params.user_id} could not be found.`
+                )
+            }
         }
 
         const currentAccessToken = await User.accessTokens.find(user, params.access_token_id)
