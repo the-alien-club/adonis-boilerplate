@@ -34,6 +34,7 @@ export default class UsersController extends BaseController {
      */
     async show({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
+
         if (params.user_id) {
             user = await User.find(params.user_id)
             if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
@@ -54,6 +55,7 @@ export default class UsersController extends BaseController {
      */
     async update({ auth, bouncer, request, params }: HttpContext) {
         let user: User | null = auth.user as User
+
         if (params.user_id) {
             user = await User.find(params.user_id)
             if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
@@ -85,6 +87,7 @@ export default class UsersController extends BaseController {
      */
     async destroy({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
+
         if (params.user_id) {
             user = await User.find(params.user_id)
             if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
