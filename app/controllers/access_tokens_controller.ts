@@ -94,17 +94,27 @@ export default class AccessTokensController extends BaseController {
         }
 
         // Fallback to unrestricted scope in case no specific scope was provided
-        const accessToken = await User.accessTokens.create(
-            user,
-            AccessTokenScopeAbilities[(scope as AccessTokenScope) || AccessTokenScope.UNRESTRICTED],
-            {
-                name:
-                    user.id === auth.user?.id
-                        ? `Token issued manually (${scope}).`
-                        : `Token issued by an administrator (${scope}).`,
-                expiresIn: expiresIn || undefined,
-            }
-        )
+        let accessToken: AccessToken | null = null
+        try {
+            accessToken = await User.accessTokens.create(
+                user,
+                AccessTokenScopeAbilities[(scope as AccessTokenScope) || AccessTokenScope.UNRESTRICTED],
+                {
+                    name:
+                        user.id === auth.user?.id
+                            ? `Token issued manually (${scope}).`
+                            : `Token issued by an administrator (${scope}).`,
+                    expiresIn: expiresIn || undefined,
+                }
+            )
+        } catch (error) {
+            logger.error(`failed to create access token for user ${user.id}:`, error)
+            return this.errorResponse(
+                AppErrors.INTERNAL_SERVER_ERROR,
+                undefined,
+                "This access token could not be created."
+            )
+        }
 
         logger.debug(
             userLog(
@@ -171,14 +181,36 @@ export default class AccessTokensController extends BaseController {
 
         const scope = recoverAccessTokenScope(currentAccessToken.abilities)
 
-        await User.accessTokens.delete(user, params.access_token_id)
-        const accessToken = await User.accessTokens.create(user, currentAccessToken.abilities, {
-            name:
-                user.id === auth.user?.id
-                    ? `Access token issued manually (${scope} - refreshed).`
-                    : `Access token issued by an administrator (${scope} - refreshed).`,
-            expiresIn: expiresIn || undefined,
-        })
+        // Destroy the current access token
+        try {
+            await User.accessTokens.delete(user, params.access_token_id)
+        } catch (error) {
+            logger.error(`failed to delete access token for user ${user.id}:`, error)
+            return this.errorResponse(
+                AppErrors.INTERNAL_SERVER_ERROR,
+                undefined,
+                "This access token could not be refreshed."
+            )
+        }
+
+        // Create a new access token with the same scope and abilities
+        let accessToken: AccessToken
+        try {
+            accessToken = await User.accessTokens.create(user, currentAccessToken.abilities, {
+                name:
+                    user.id === auth.user?.id
+                        ? `Access token issued manually (${scope} - refreshed).`
+                        : `Access token issued by an administrator (${scope} - refreshed).`,
+                expiresIn: expiresIn || undefined,
+            })
+        } catch (error) {
+            logger.error(`failed to create new access token for user ${user.id}:`, error)
+            return this.errorResponse(
+                AppErrors.INTERNAL_SERVER_ERROR,
+                undefined,
+                "This access token could not be refreshed."
+            )
+        }
 
         logger.debug(
             userLog(
@@ -217,7 +249,16 @@ export default class AccessTokensController extends BaseController {
 
         const scope = recoverAccessTokenScope(currentAccessToken.abilities)
 
-        await User.accessTokens.delete(user, params.access_token_id)
+        try {
+            await User.accessTokens.delete(user, params.access_token_id)
+        } catch (error) {
+            logger.error(`failed to delete access token for user ${user.id}:`, error)
+            return this.errorResponse(
+                AppErrors.INTERNAL_SERVER_ERROR,
+                undefined,
+                "This access token could not be revoked."
+            )
+        }
 
         logger.debug(
             userLog(

@@ -7,13 +7,14 @@ import { credentialsValidator, userRegistrationValidator } from "#validators/aut
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
 import { AppErrors } from "#lib/errors"
+import { AccessToken } from "@adonisjs/auth/access_tokens"
 
 export default class AuthController extends BaseController {
     /**
      * Main user registration route.
      */
     async signup({ request }: HttpContext) {
-        const { email, username, password, firstName, lastName, description } =
+        const { email, username, password, firstName, lastName } =
             await request.validateUsing(userRegistrationValidator)
 
         // Non-isolated
@@ -23,15 +24,24 @@ export default class AuthController extends BaseController {
             return this.errorResponse(AppErrors.USERNAME_ALREADY_EXISTS)
         }
 
-        const user = await User.create({
-            isLocked: true,
-            email,
-            username,
-            password,
-            firstName: firstName || null,
-            lastName: lastName || null,
-            description: description || null,
-        })
+        let user: User
+        try {
+            user = await User.create({
+                isLocked: true,
+                email,
+                username,
+                password,
+                firstName: firstName ?? null,
+                lastName: lastName ?? null,
+            })
+        } catch (error) {
+            logger.error(`failed to create user with email ${email}:`, error)
+            return this.errorResponse(
+                AppErrors.INTERNAL_SERVER_ERROR,
+                undefined,
+                "This user account could not be created."
+            )
+        }
 
         const defaultRole = await Role.findBy("slug", "user")
         if (defaultRole) await user.related("roles").attach([defaultRole.id])
@@ -64,10 +74,20 @@ export default class AuthController extends BaseController {
             )
         }
 
-        const accessToken = await User.accessTokens.create(user, AccessTokenScopeAbilities.unrestricted, {
-            name: "Access token issued via credentials (unrestricted)",
-            expiresIn: expiresIn || undefined,
-        })
+        let accessToken: AccessToken
+        try {
+            accessToken = await User.accessTokens.create(user, AccessTokenScopeAbilities.unrestricted, {
+                name: "Access token issued via credentials (unrestricted)",
+                expiresIn: expiresIn || undefined,
+            })
+        } catch (error) {
+            logger.error(`failed to create access token for user with email ${email}:`, error)
+            return this.errorResponse(
+                AppErrors.INTERNAL_SERVER_ERROR,
+                undefined,
+                "This access token could not be created."
+            )
+        }
 
         logger.debug(userLog(user, "signed in successfully, issuing a new access token"))
         return this.successResponse(accessToken)

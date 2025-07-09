@@ -93,9 +93,9 @@ export default class RolesController extends BaseController {
 
         const { name, slug, description } = await request.validateUsing(roleUpdateValidator)
 
-        role.name = name || role.name
-        role.slug = slug || role.slug
-        role.description = description || role.description
+        role.name = name ?? role.name
+        role.slug = slug ?? role.slug
+        role.description = description ?? role.description
         await role.save()
 
         return this.successResponse(role)
