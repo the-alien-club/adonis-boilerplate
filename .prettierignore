@@ -3,6 +3,5 @@ tsconfig.json
 .gitattributes
 .gitignore
 .prettierignore
-README.md
-yarn.lock
-package-lock.json
+*.md
+LICENSE
