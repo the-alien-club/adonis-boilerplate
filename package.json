@@ -43,7 +43,6 @@
         "knip": "knip",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
-        "format": "prettier --write .",
         "test:sandbox": "dotenv tsx ./tests/sandbox.ts",
         "test:unit": "node ace test unit",
         "dev": "node ace serve --watch",
