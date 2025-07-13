@@ -22,8 +22,8 @@ export default class RoleMiddleware {
         if (!ctx.auth.isAuthenticated) {
             return ctx.response.forbidden({
                 success: false,
-                message: "Unauthenticated user.",
-                error: AppErrors.UNAUTHENTICATED,
+                message: "You are not authorized to access this resource.",
+                error: AppErrors.UNAUTHORIZED,
             })
         }
 
@@ -39,7 +39,7 @@ export default class RoleMiddleware {
         if (!userRoles.includes(options.role)) {
             return ctx.response.forbidden({
                 success: false,
-                message: "You do not have the required role to access this route.",
+                message: "You are not authorized to access this resource.",
                 error: AppErrors.UNAUTHORIZED,
             })
         }

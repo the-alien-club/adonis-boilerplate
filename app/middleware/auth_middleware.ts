@@ -22,18 +22,20 @@ export default class AuthMiddleware {
         try {
             await ctx.auth.authenticateUsing(options.guards, { loginRoute: "/login" })
         } catch (error) {
-            return ctx.response.forbidden({
-                success: false,
-                message: "The access token that was provided is invalid or has expired.",
-                error: AppErrors.INVALID_ACCESS_TOKEN,
-            })
+            if (!ctx.auth.user) {
+                return ctx.response.forbidden({
+                    success: false,
+                    message: "You are not authorized to access this resource.",
+                    error: AppErrors.UNAUTHORIZED,
+                })
+            }
         }
 
         if (!ctx.auth.user) {
             return ctx.response.forbidden({
                 success: false,
-                message: "Unauthenticated user.",
-                error: AppErrors.UNAUTHENTICATED,
+                message: "You are not authorized to access this resource.",
+                error: AppErrors.UNAUTHORIZED,
             })
         }
 

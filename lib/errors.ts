@@ -54,12 +54,6 @@ export const AppErrors = {
     //=====//
     // 401 //
     //=====//
-    UNAUTHENTICATED: {
-        status: 401,
-        name: "UNAUTHENTICATED",
-        message: "You are not authenticated. Please log in to access this resource.",
-        data: null,
-    },
     LOCKED: {
         status: 401,
         name: "LOCKED",
