@@ -1,1 +1,8 @@
 tsconfig.json
+.env.*
+.gitattributes
+.gitignore
+.prettierignore
+README.md
+yarn.lock
+package-lock.json
