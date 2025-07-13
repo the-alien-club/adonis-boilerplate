@@ -26,7 +26,7 @@ export default await Env.create(new URL("../", import.meta.url), {
     REDIS_DB: Env.schema.number(),
 
     // Default administrator
-    DEFAULT_ADMIN_EMAIL: Env.schema.string({ format: "email" }),
-    DEFAULT_ADMIN_USERNAME: Env.schema.string(),
-    DEFAULT_ADMIN_PASSWORD: Env.schema.string(),
+    DEFAULT_ADMIN_EMAIL: Env.schema.string.optional({ format: "email" }),
+    DEFAULT_ADMIN_USERNAME: Env.schema.string.optional(),
+    DEFAULT_ADMIN_PASSWORD: Env.schema.string.optional(),
 })
