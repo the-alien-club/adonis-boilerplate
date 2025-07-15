@@ -23,7 +23,6 @@ export default class AuthMiddleware {
             await ctx.auth.authenticateUsing(options.guards, { loginRoute: "/signin" })
         } catch (error) {
             if (!ctx.auth.user) {
-                logger.error(userLog(ctx.auth.user, "failed to authenticate"), error)
                 return ctx.response.forbidden({
                     success: false,
                     message: "You are not authorized to access this resource.",
