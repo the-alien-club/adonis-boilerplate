@@ -1,7 +1,7 @@
 import { hasRole } from "#lib/utils/roles"
-import User from "#models/user"
+import type User from "#models/user"
 import { BasePolicy as AdonisBasePolicy } from "@adonisjs/bouncer"
-import { AuthorizerResponse } from "@adonisjs/bouncer/types"
+import type { AuthorizerResponse } from "@adonisjs/bouncer/types"
 
 export default class BasePolicy extends AdonisBasePolicy {
     async before(user: User | null): Promise<AuthorizerResponse> {

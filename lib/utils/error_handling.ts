@@ -1,5 +1,5 @@
 import { stringify } from "#lib/utils/json"
-import { ErrorObj, FailedRequest } from "#types/requests"
+import type { ErrorObj, FailedRequest } from "#types/requests"
 
 /**
  * Formats an `ErrorObj` into a standard error sent back by an API endpoint.

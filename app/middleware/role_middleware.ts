@@ -1,6 +1,6 @@
 import { AppErrors } from "#lib/errors"
 import { getUserRoles } from "#lib/utils/roles"
-import Role from "#models/role"
+import type Role from "#models/role"
 import type { HttpContext } from "@adonisjs/core/http"
 import type { NextFn } from "@adonisjs/core/types/http"
 

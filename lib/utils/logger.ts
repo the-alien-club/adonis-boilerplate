@@ -1,4 +1,4 @@
-import User from "#models/user"
+import type User from "#models/user"
 import logger from "@adonisjs/core/services/logger"
 
 /**

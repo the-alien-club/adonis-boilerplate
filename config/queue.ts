@@ -1,6 +1,6 @@
 import redisConnector from "#database/connectors/redis"
 import env from "#start/env"
-import { QueueOptions } from "bullmq"
+import type { QueueOptions } from "bullmq"
 
 /**
  * The default configuration for queues.

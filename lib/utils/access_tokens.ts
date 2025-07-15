@@ -1,4 +1,4 @@
-import User from "#models/user"
+import type User from "#models/user"
 
 /**
  * The scope of an access token that can be issued.

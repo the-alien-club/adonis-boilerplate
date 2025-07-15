@@ -1,5 +1,5 @@
-import { HttpContext } from "@adonisjs/core/http"
-import { ErrorObj, FailedRequest } from "#types/requests"
+import type { HttpContext } from "@adonisjs/core/http"
+import type { ErrorObj, FailedRequest } from "#types/requests"
 
 export default class BaseController {
     constructor(protected ctx: HttpContext) {}

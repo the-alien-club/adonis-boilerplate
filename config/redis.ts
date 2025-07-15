@@ -1,5 +1,5 @@
 import env from "#start/env"
-import { default as IORedis } from "ioredis"
+import type { default as IORedis } from "ioredis"
 
 /**
  * The configuration for the Redis database.

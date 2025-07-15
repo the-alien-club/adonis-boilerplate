@@ -1,6 +1,6 @@
 import BaseController from "#controllers/templates/base_controller"
 import { rootPath } from "#lib/utils/paths"
-import { HttpContext } from "@adonisjs/core/http"
+import type { HttpContext } from "@adonisjs/core/http"
 import { createRequire } from "node:module"
 import path from "node:path"
 

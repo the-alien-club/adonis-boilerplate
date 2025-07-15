@@ -1,6 +1,6 @@
 import { AccessTokenAbility, userAccessTokenHasAbility } from "#lib/utils/access_tokens"
-import User from "#models/user"
-import { AuthorizerResponse } from "@adonisjs/bouncer/types"
+import type User from "#models/user"
+import type { AuthorizerResponse } from "@adonisjs/bouncer/types"
 import BasePolicy from "#policies/templates/base_policy"
 
 export default class UserPolicy extends BasePolicy {

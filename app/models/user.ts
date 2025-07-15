@@ -1,9 +1,10 @@
-import { DateTime } from "luxon"
+import type { DateTime } from "luxon"
 import hash from "@adonisjs/core/services/hash"
 import { compose } from "@adonisjs/core/helpers"
 import { BaseModel, column, manyToMany } from "@adonisjs/lucid/orm"
 import { withAuthFinder } from "@adonisjs/auth/mixins/lucid"
-import { AccessToken, DbAccessTokensProvider } from "@adonisjs/auth/access_tokens"
+import type { AccessToken } from "@adonisjs/auth/access_tokens"
+import { DbAccessTokensProvider } from "@adonisjs/auth/access_tokens"
 import type { ManyToMany } from "@adonisjs/lucid/types/relations"
 import Role from "#models/role"
 

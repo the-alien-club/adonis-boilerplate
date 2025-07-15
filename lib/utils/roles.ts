@@ -1,5 +1,5 @@
-import User from "#models/user"
-import { HttpContext } from "@adonisjs/core/http"
+import type User from "#models/user"
+import type { HttpContext } from "@adonisjs/core/http"
 
 /**
  * Where it is not possible to use the role middleware, this function allows to recover user's roles

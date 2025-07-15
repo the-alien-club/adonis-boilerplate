@@ -1,5 +1,5 @@
 import redisConnector from "#database/connectors/redis"
-import { WorkerOptions } from "bullmq"
+import type { WorkerOptions } from "bullmq"
 
 /**
  * The default configuration for workers.

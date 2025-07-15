@@ -2,7 +2,7 @@ import User from "#models/user"
 import { BaseModel, column, manyToMany } from "@adonisjs/lucid/orm"
 import type { ManyToMany } from "@adonisjs/lucid/types/relations"
 
-import { DateTime } from "luxon"
+import type { DateTime } from "luxon"
 
 export default class Role extends BaseModel {
     @column({ isPrimary: true })

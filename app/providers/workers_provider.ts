@@ -2,7 +2,7 @@ import { cronQueue } from "#queues/index"
 import cronWorker from "#workers/cron_worker"
 import basicWorker from "#workers/basic_worker"
 import logger from "@adonisjs/core/services/logger"
-import { Worker } from "bullmq"
+import type { Worker } from "bullmq"
 
 // List all the workers that should be started on AdonisJs boot
 const workers: { [workerName: string]: Worker } = {

@@ -1,6 +1,6 @@
 import { AppErrors } from "#lib/errors"
 import { middleware } from "#start/kernel"
-import { FailedRequest } from "#types/requests"
+import type { FailedRequest } from "#types/requests"
 import router from "@adonisjs/core/services/router"
 
 const AccessTokensController = () => import("#controllers/access_tokens_controller")

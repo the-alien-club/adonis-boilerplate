@@ -5,9 +5,9 @@ import { AccessTokenScopeAbilities } from "#lib/utils/access_tokens"
 import Role from "#models/role"
 import User from "#models/user"
 import { credentialsValidator, userRegistrationValidator } from "#validators/auth_validator"
-import { HttpContext } from "@adonisjs/core/http"
+import type { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
-import { AccessToken } from "@adonisjs/auth/access_tokens"
+import type { AccessToken } from "@adonisjs/auth/access_tokens"
 
 export default class AuthController extends BaseController {
     /**
