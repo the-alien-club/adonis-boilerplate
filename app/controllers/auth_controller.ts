@@ -1,12 +1,12 @@
 import BaseController from "#controllers/templates/base_controller"
-import { userLog } from "#lib/utils/logger"
+import { AppErrors } from "#lib/errors"
+import { tryCatchLog, userLog } from "#lib/utils/logger"
 import { AccessTokenScopeAbilities } from "#lib/utils/access_tokens"
 import Role from "#models/role"
 import User from "#models/user"
 import { credentialsValidator, userRegistrationValidator } from "#validators/auth_validator"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
-import { AppErrors } from "#lib/errors"
 import { AccessToken } from "@adonisjs/auth/access_tokens"
 
 export default class AuthController extends BaseController {
@@ -31,11 +31,11 @@ export default class AuthController extends BaseController {
                 email,
                 username,
                 password,
-                firstName: firstName ?? null,
-                lastName: lastName ?? null,
+                firstName: firstName || null,
+                lastName: lastName || null,
             })
         } catch (error) {
-            logger.error(`failed to create user with email ${email}:`, error)
+            tryCatchLog(`failed to create user with email ${email}`, error)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,
@@ -69,7 +69,7 @@ export default class AuthController extends BaseController {
             logger.info(userLog(user, "tried to sign in but their account is locked"))
             return this.errorResponse(
                 AppErrors.LOCKED,
-                null,
+                undefined,
                 "Your account is locked. Please contact an administrator."
             )
         }
@@ -81,7 +81,7 @@ export default class AuthController extends BaseController {
                 expiresIn: expiresIn || undefined,
             })
         } catch (error) {
-            logger.error(`failed to create access token for user with email ${email}:`, error)
+            tryCatchLog(`failed to create access token for user with email ${email}`, error)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,

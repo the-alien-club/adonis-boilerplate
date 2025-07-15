@@ -1,4 +1,5 @@
 import User from "#models/user"
+import logger from "@adonisjs/core/services/logger"
 
 /**
  * Generates a log message based on a given user and action,
@@ -11,4 +12,16 @@ export function userLog(user: User | undefined, action: string): string {
     if (!user) return `unknown user ${action}`
 
     return `user ${user.id} (${user.email || user.username || "..."}) ${action}`
+}
+
+/**
+ * Logs for a try-catch block with an optional error object that turns into `Unknown Error`
+ * if not provided or undefined.
+ * @param message The message to log.
+ * @param error The error object to log (optional).
+ * @param user The user associated with the error (optional).
+ */
+export function tryCatchLog(message: string, error?: Error, user?: User): void {
+    const errorMessage = error ? error.message : "Unknown Error"
+    logger.error(`${message}${user ? ` for user ${user.id}` : ""}: ${errorMessage}`)
 }

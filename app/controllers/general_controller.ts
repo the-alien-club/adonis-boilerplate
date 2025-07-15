@@ -18,7 +18,7 @@ export default class GeneralController extends BaseController {
                 status: "online",
                 version: pck.version,
                 timestamp: Date.now(),
-                message: "A boilerplate provided by Alien!",
+                message: "A service provided by Alien Intelligence!",
             },
         })
     }

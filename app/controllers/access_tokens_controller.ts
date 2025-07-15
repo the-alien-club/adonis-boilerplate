@@ -1,12 +1,13 @@
 import BaseController from "#controllers/templates/base_controller"
 import { AppErrors } from "#lib/errors"
-import { userLog } from "#lib/utils/logger"
+import { tryCatchLog, userLog } from "#lib/utils/logger"
 import { AccessTokenScope, AccessTokenScopeAbilities, recoverAccessTokenScope } from "#lib/utils/access_tokens"
 import User from "#models/user"
 import AccessTokenPolicy from "#policies/access_token_policy"
 import { AccessToken } from "@adonisjs/auth/access_tokens"
 import { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
+
 import { accessTokenCreationValidator, accessTokenUpdateValidator } from "#validators/access_token_validator"
 
 export default class AccessTokensController extends BaseController {
@@ -108,7 +109,7 @@ export default class AccessTokensController extends BaseController {
                 }
             )
         } catch (error) {
-            logger.error(`failed to create access token for user ${user.id}:`, error)
+            tryCatchLog("failed to create access token", error, user)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,
@@ -185,7 +186,7 @@ export default class AccessTokensController extends BaseController {
         try {
             await User.accessTokens.delete(user, params.access_token_id)
         } catch (error) {
-            logger.error(`failed to delete access token for user ${user.id}:`, error)
+            tryCatchLog("failed to delete access token", error, user)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,
@@ -204,7 +205,7 @@ export default class AccessTokensController extends BaseController {
                 expiresIn: expiresIn || undefined,
             })
         } catch (error) {
-            logger.error(`failed to create new access token for user ${user.id}:`, error)
+            tryCatchLog("failed to create new access token", error, user)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,
@@ -252,7 +253,7 @@ export default class AccessTokensController extends BaseController {
         try {
             await User.accessTokens.delete(user, params.access_token_id)
         } catch (error) {
-            logger.error(`failed to delete access token for user ${user.id}:`, error)
+            tryCatchLog("failed to delete access token", error, user)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,

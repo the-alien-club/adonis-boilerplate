@@ -5,6 +5,8 @@ import Role from "#models/role"
 import User from "#models/user"
 import { roleCreationValidator, roleUpdateValidator } from "#validators/role_validator"
 import { AppErrors } from "#lib/errors"
+import { tryCatchLog } from "#lib/utils/logger"
+import { isValidIntId } from "#lib/utils/miscellaneous"
 
 export default class RolesController extends BaseController {
     /**
@@ -52,7 +54,7 @@ export default class RolesController extends BaseController {
     /**
      * Add a new role.
      */
-    async store({ bouncer, request }: HttpContext) {
+    async store({ auth, bouncer, request }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("store")) {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
@@ -62,7 +64,14 @@ export default class RolesController extends BaseController {
         // Non-isolated
         if (await Role.findBy("slug", slug)) return this.errorResponse(AppErrors.ROLE_ALREADY_EXISTS)
 
-        const role = await Role.create({ name, description })
+        let role: Role
+        try {
+            role = await Role.create({ name, description })
+        } catch (error) {
+            tryCatchLog(`failed to create role with slug ${slug}`, error, auth.user)
+            return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This role could not be created.")
+        }
+
         return this.successResponse(role)
     }
 
@@ -70,6 +79,10 @@ export default class RolesController extends BaseController {
      * Get role by ID.
      */
     async show({ bouncer, params }: HttpContext) {
+        if (!isValidIntId(params.role_id)) {
+            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "Role ID is required.")
+        }
+
         const role = await Role.find(params.role_id)
         if (!role) return this.errorResponse(AppErrors.ROLE_NOT_FOUND)
 
@@ -86,6 +99,10 @@ export default class RolesController extends BaseController {
     async update({ bouncer, request, params }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("update")) {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
+        }
+
+        if (!isValidIntId(params.role_id)) {
+            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "Role ID is required.")
         }
 
         const role = await Role.find(params.role_id)
@@ -107,6 +124,10 @@ export default class RolesController extends BaseController {
     async destroy({ bouncer, params }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("destroy")) {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
+        }
+
+        if (!isValidIntId(params.role_id)) {
+            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "Role ID is required.")
         }
 
         const role = await Role.find(params.role_id)

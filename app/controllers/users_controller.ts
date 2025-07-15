@@ -1,6 +1,7 @@
 import BaseController from "#controllers/templates/base_controller"
 import { AppErrors } from "#lib/errors"
-import { userLog } from "#lib/utils/logger"
+import { tryCatchLog, userLog } from "#lib/utils/logger"
+import { isValidIntId } from "#lib/utils/miscellaneous"
 import User from "#models/user"
 import UserPolicy from "#policies/user_policy"
 import { userUpdateValidator } from "#validators/user_validator"
@@ -94,7 +95,12 @@ export default class UsersController extends BaseController {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
-        await user.delete()
+        try {
+            await user.delete()
+        } catch (error) {
+            tryCatchLog(`failed to delete user ${user.id}`, error)
+            return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This user could not be deleted.")
+        }
 
         logger.debug(userLog(user, "deleted successfully"))
         return this.successResponse(user)
@@ -106,6 +112,10 @@ export default class UsersController extends BaseController {
     async lock({ auth, bouncer, params }: HttpContext) {
         if (await bouncer.with(UserPolicy).denies("lock")) {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
+        }
+
+        if (!isValidIntId(params.user_id)) {
+            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "User ID is required.")
         }
 
         const user = await User.find(params.user_id)
@@ -129,6 +139,10 @@ export default class UsersController extends BaseController {
     async unlock({ auth, bouncer, params }: HttpContext) {
         if (await bouncer.with(UserPolicy).denies("unlock")) {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
+        }
+
+        if (!isValidIntId(params.user_id)) {
+            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "User ID is required.")
         }
 
         const user = await User.find(params.user_id)
