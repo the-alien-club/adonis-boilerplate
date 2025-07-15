@@ -89,7 +89,7 @@ router
 router.any("*", ({ response }) => {
     return response.status(AppErrors.NOT_FOUND.status).send({
         success: false,
-        message: AppErrors.NOT_FOUND.message,
+        message: "This API route does not exist.",
         error: AppErrors.NOT_FOUND,
     } satisfies FailedRequest)
 })
