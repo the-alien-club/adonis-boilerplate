@@ -1,4 +1,6 @@
+import { AppErrors } from "#lib/errors"
 import { middleware } from "#start/kernel"
+import { FailedRequest } from "#types/requests"
 import router from "@adonisjs/core/services/router"
 
 const AccessTokensController = () => import("#controllers/access_tokens_controller")
@@ -80,3 +82,14 @@ router
     .prefix("/admin")
     .use(middleware.auth({ guards: ["base64credentials", "accessTokens"] }))
     .use(middleware.role({ role: "administrator" }))
+
+// =======================================================================
+//  404 route to prevent errors from being thrown (information leak risk)
+// =======================================================================
+router.any("*", ({ response }) => {
+    return response.status(AppErrors.NOT_FOUND.status).send({
+        success: false,
+        message: AppErrors.NOT_FOUND.message,
+        error: AppErrors.NOT_FOUND,
+    } satisfies FailedRequest)
+})
