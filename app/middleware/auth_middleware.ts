@@ -20,7 +20,7 @@ export default class AuthMiddleware {
         } = {}
     ) {
         try {
-            await ctx.auth.authenticateUsing(options.guards, { loginRoute: "/login" })
+            await ctx.auth.authenticateUsing(options.guards, { loginRoute: "/signin" })
         } catch (error) {
             if (!ctx.auth.user) {
                 return ctx.response.forbidden({
