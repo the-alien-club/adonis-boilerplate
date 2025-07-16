@@ -9,6 +9,7 @@ import type { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
 
 import { accessTokenCreationValidator, accessTokenUpdateValidator } from "#validators/access_token_validator"
+import { isValidIntId } from "#lib/utils/miscellaneous"
 
 export default class AccessTokensController extends BaseController {
     /**
@@ -17,6 +18,14 @@ export default class AccessTokensController extends BaseController {
     async index({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) {
                 return this.errorResponse(
@@ -75,6 +84,14 @@ export default class AccessTokensController extends BaseController {
 
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) {
                 return this.errorResponse(
@@ -135,6 +152,14 @@ export default class AccessTokensController extends BaseController {
     async show({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) {
                 return this.errorResponse(
@@ -161,6 +186,14 @@ export default class AccessTokensController extends BaseController {
     async update({ auth, bouncer, params, request }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) {
                 return this.errorResponse(
@@ -231,6 +264,14 @@ export default class AccessTokensController extends BaseController {
     async destroy({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) {
                 return this.errorResponse(
