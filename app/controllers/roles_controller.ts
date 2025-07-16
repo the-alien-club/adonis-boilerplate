@@ -121,7 +121,7 @@ export default class RolesController extends BaseController {
     /**
      * Delete a role.
      */
-    async destroy({ bouncer, params }: HttpContext) {
+    async destroy({ auth, bouncer, params }: HttpContext) {
         if (await bouncer.with(RolePolicy).denies("destroy")) {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
@@ -133,7 +133,13 @@ export default class RolesController extends BaseController {
         const role = await Role.find(params.role_id)
         if (!role) return this.errorResponse(AppErrors.ROLE_NOT_FOUND)
 
-        await role.delete()
+        try {
+            await role.delete()
+        } catch (error) {
+            tryCatchLog(`failed to delete role ${params.role_id}`, error, auth.user)
+            return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This role could not be deleted.")
+        }
+
         return this.successResponse(role)
     }
 }
