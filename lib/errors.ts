@@ -51,6 +51,18 @@ export const AppErrors = {
         message: "Invalid credentials.",
         data: null,
     },
+    INVALID_ID_FORMAT: {
+        status: 400,
+        name: "INVALID_ID_FORMAT",
+        message: "The provided ID is not a valid integer.",
+        data: null,
+    },
+    INVALID_SLUG_FORMAT: {
+        status: 400,
+        name: "INVALID_SLUG_FORMAT",
+        message: "The provided slug is not valid.",
+        data: null,
+    },
     //=====//
     // 401 //
     //=====//

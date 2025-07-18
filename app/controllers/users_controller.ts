@@ -36,6 +36,14 @@ export default class UsersController extends BaseController {
     async show({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
@@ -56,6 +64,14 @@ export default class UsersController extends BaseController {
     async update({ auth, bouncer, request, params }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
@@ -87,6 +103,14 @@ export default class UsersController extends BaseController {
     async destroy({ auth, bouncer, params }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
+            if (!isValidIntId(params.user_id)) {
+                return this.errorResponse(
+                    AppErrors.INVALID_ID_FORMAT,
+                    undefined,
+                    `The user ID '${params.user_id}' is not a valid integer.`
+                )
+            }
+
             user = await User.find(params.user_id)
             if (!user) return this.errorResponse(AppErrors.USER_NOT_FOUND)
         }
