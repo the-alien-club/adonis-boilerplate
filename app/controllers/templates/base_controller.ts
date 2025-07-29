@@ -1,6 +1,10 @@
-import type { HttpContext } from "@adonisjs/core/http"
 import type { ErrorObj, FailedRequest } from "#types/requests"
+import { inject } from "@adonisjs/core"
+// Warning: Adding "type" to this import will BREAK the injection system.
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { HttpContext } from "@adonisjs/core/http"
 
+@inject()
 export default class BaseController {
     constructor(protected ctx: HttpContext) {}
 
