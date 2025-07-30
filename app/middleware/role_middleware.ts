@@ -1,3 +1,4 @@
+import { BaseRole } from "#database/seeders/roles_seeder"
 import { AppErrors } from "#lib/errors"
 import { getUserRoles } from "#lib/utils/roles"
 import type Role from "#models/role"
@@ -17,7 +18,7 @@ export default class RoleMiddleware {
         next: NextFn,
         options: {
             role: Role["slug"]
-        } = { role: "administrator" }
+        } = { role: BaseRole.ADMIN }
     ) {
         if (!ctx.auth.isAuthenticated) {
             return ctx.response.forbidden({

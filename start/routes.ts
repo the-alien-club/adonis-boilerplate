@@ -1,3 +1,4 @@
+import { BaseRole } from "#database/seeders/roles_seeder"
 import { AppErrors } from "#lib/errors"
 import { middleware } from "#start/kernel"
 import type { FailedRequest } from "#types/requests"
@@ -81,7 +82,7 @@ router
     })
     .prefix("/admin")
     .use(middleware.auth({ guards: ["base64credentials", "accessTokens"] }))
-    .use(middleware.role({ role: "administrator" }))
+    .use(middleware.role({ role: BaseRole.ADMIN }))
 
 // =======================================================================
 //  404 route to prevent errors from being thrown (information leak risk)

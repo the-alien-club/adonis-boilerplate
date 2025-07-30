@@ -1,3 +1,4 @@
+import { BaseRole } from "#database/seeders/roles_seeder"
 import { hasRole } from "#lib/utils/roles"
 import type User from "#models/user"
 import { BasePolicy as AdonisBasePolicy } from "@adonisjs/bouncer"
@@ -7,7 +8,7 @@ export default class BasePolicy extends AdonisBasePolicy {
     async before(user: User | null): Promise<AuthorizerResponse> {
         if (user) {
             if (!user.roles) await user.load("roles")
-            const isAdmin = hasRole(user, "administrator")
+            const isAdmin = hasRole(user, BaseRole.ADMIN)
             return isAdmin
         }
 
