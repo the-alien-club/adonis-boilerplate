@@ -116,7 +116,9 @@ export default class RolesController extends BaseController {
             roles = await Role.query().whereIn("id", parsedIds).orWhereIn("slug", parsedSlugs)
         } catch (error) {
             tryCatchLog(`failed to retrieve roles:`, error, auth.user)
-            return this.errorResponse(AppErrors.ROLE_NOT_FOUND, undefined, `Failed to retrieve roles: ${error.message}`)
+
+            const message = error instanceof Error ? error.message : String(error)
+            return this.errorResponse(AppErrors.ROLE_NOT_FOUND, undefined, `Failed to retrieve roles: ${message}`)
         }
 
         if (roles.length === 0) return this.errorResponse(AppErrors.ROLE_NOT_FOUND)

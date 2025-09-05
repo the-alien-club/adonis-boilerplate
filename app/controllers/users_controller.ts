@@ -86,7 +86,9 @@ export default class UsersController extends BaseController {
             users = await User.query().whereIn("id", parsedIds)
         } catch (error) {
             tryCatchLog(`failed to retrieve users:`, error, auth.user)
-            return this.errorResponse(AppErrors.USER_NOT_FOUND, undefined, `Failed to retrieve users: ${error.message}`)
+
+            const message = error instanceof Error ? error.message : String(error)
+            return this.errorResponse(AppErrors.USER_NOT_FOUND, undefined, `Failed to retrieve users: ${message}`)
         }
 
         if (users.length === 0) return this.errorResponse(AppErrors.USER_NOT_FOUND)
