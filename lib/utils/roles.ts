@@ -1,3 +1,4 @@
+import type { BaseRole } from "#database/seeders/roles_seeder"
 import type User from "#models/user"
 import type { HttpContext } from "@adonisjs/core/http"
 
@@ -32,7 +33,7 @@ export async function getUserRoles(user: User) {
  * @param roleSlug The role slug.
  * @returns `true` if the user has the role, `false` otherwise.
  */
-export function hasRole(user: User | null, roleSlug: string) {
+export function hasRole(user: User | null, roleSlug: string | BaseRole) {
     if (!user) return false
     if (!user.roles) return false
     return user.roles.some((role) => role.slug === roleSlug)

@@ -1,12 +1,13 @@
 import { BaseRole } from "#database/seeders/roles_seeder"
 import { AppErrors } from "#lib/errors"
+import type { FailedRequest } from "#lib/utils/error_handling"
 import { middleware } from "#start/kernel"
-import type { FailedRequest } from "#types/requests"
 import router from "@adonisjs/core/services/router"
 
 const AccessTokensController = () => import("#controllers/access_tokens_controller")
 const AuthController = () => import("#controllers/auth_controller")
 const GeneralController = () => import("#controllers/general_controller")
+const OpenApiController = () => import("#controllers/openapi_controller")
 const RolesController = () => import("#controllers/roles_controller")
 const UsersController = () => import("#controllers/users_controller")
 
@@ -21,38 +22,53 @@ router.get("/", async ({ response }) => response.redirect("/status"))
 // ==========================================
 router.get("/status", [GeneralController, "status"])
 
+// ====================================
+//  OpenAPI routes (for documentation)
+// ====================================
+router.get("/openapi", [OpenApiController, "spec"])
+
 // =========================================
 //  Authentication routes (via credentials)
 // =========================================
-router.post("/signup", [AuthController, "signup"])
-router.post("/signin", [AuthController, "signin"])
+router.post("/sign-up", [AuthController, "signUp"])
+router.post("/sign-in", [AuthController, "signIn"])
+router.post("/sign-in/bearer", [AuthController, "signInForBearer"])
 
 // ==================================================================
 //  Logged-in user routes: Accessible via credentials / access token
 // ==================================================================
 router
     .group(() => {
-        // Roles
-        router.get("/roles", [RolesController, "index"])
-
-        // Roles by ID
-        router.get("/roles/:role_id", [RolesController, "show"])
-
         // Access tokens
         router.get("/access-tokens", [AccessTokensController, "index"])
         router.post("/access-tokens", [AccessTokensController, "store"])
+        router.post("/access-tokens/revoke", [AccessTokensController, "revoke"])
 
         // Access tokens by ID
         router.get("/access-tokens/:access_token_id", [AccessTokensController, "show"])
         router.patch("/access-tokens/:access_token_id", [AccessTokensController, "update"])
         router.delete("/access-tokens/:access_token_id", [AccessTokensController, "destroy"])
 
-        // User self-management
+        // Roles
+        router.get("/roles", [RolesController, "index"])
+        router.get("/roles/batch", [RolesController, "showBatch"])
+
+        // Roles by ID
+        router.get("/roles/:role_id", [RolesController, "show"])
+
+        // User
+        router.get("/users/me", [UsersController, "me"])
+        router.get("/users/batch", [UsersController, "showBatch"])
+
+        // Users by ID
         router.get("/users/:user_id", [UsersController, "show"])
         router.patch("/users/:user_id", [UsersController, "update"])
         router.delete("/users/:user_id", [UsersController, "destroy"])
+
+        // Special route to sign out
+        router.post("/sign-out", [AuthController, "signOut"])
     })
-    .use(middleware.auth({ guards: ["base64credentials", "accessTokens"] }))
+    .use(middleware.auth({ guards: ["api", "session"] }))
 
 // =================================================================
 //  Administrator only routes: Accessible via credentials / session
@@ -60,8 +76,8 @@ router
 router
     .group(() => {
         // Special routes to recover all data from a model
-        router.get("/roles", [RolesController, "adminIndex"])
         router.get("/access-tokens", [AccessTokensController, "adminIndex"])
+        router.get("/roles", [RolesController, "adminIndex"])
         router.get("/users", [UsersController, "adminIndex"])
 
         // Roles management
@@ -81,7 +97,7 @@ router
         router.patch("users/:user_id/unlock", [UsersController, "unlock"])
     })
     .prefix("/admin")
-    .use(middleware.auth({ guards: ["base64credentials", "accessTokens"] }))
+    .use(middleware.auth({ guards: ["api", "session"] }))
     .use(middleware.role({ role: BaseRole.ADMIN }))
 
 // =======================================================================

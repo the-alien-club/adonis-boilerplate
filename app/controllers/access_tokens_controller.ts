@@ -41,7 +41,7 @@ export default class AccessTokensController extends BaseController {
         }
 
         const accessTokens = await User.accessTokens.all(user)
-        return this.successResponse(accessTokens)
+        return this.successResponse<AccessToken[]>(accessTokens)
     }
 
     /**
@@ -62,7 +62,7 @@ export default class AccessTokensController extends BaseController {
             accessTokens.push(...userAccessTokens)
         }
 
-        return this.successResponse(
+        return this.successResponse<AccessToken[]>(
             accessTokens.map((accessToken) => ({
                 id: accessToken.identifier,
                 name: accessToken.name,
@@ -143,7 +143,7 @@ export default class AccessTokensController extends BaseController {
             )
         )
 
-        return this.successResponse(accessToken)
+        return this.successResponse<AccessToken>(accessToken)
     }
 
     /**
@@ -177,7 +177,7 @@ export default class AccessTokensController extends BaseController {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
-        return this.successResponse(accessToken)
+        return this.successResponse<AccessToken>(accessToken)
     }
 
     /**
@@ -219,7 +219,7 @@ export default class AccessTokensController extends BaseController {
         try {
             await User.accessTokens.delete(user, params.access_token_id)
         } catch (error) {
-            tryCatchLog("failed to delete access token", error, user)
+            tryCatchLog(`failed to revoke access token ${params.access_token_id}`, error, user)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,
@@ -255,7 +255,7 @@ export default class AccessTokensController extends BaseController {
             )
         )
 
-        return this.successResponse(accessToken)
+        return this.successResponse<AccessToken>(accessToken)
     }
 
     /**
@@ -294,7 +294,7 @@ export default class AccessTokensController extends BaseController {
         try {
             await User.accessTokens.delete(user, params.access_token_id)
         } catch (error) {
-            tryCatchLog("failed to delete access token", error, user)
+            tryCatchLog(`failed to revoke access token ${params.access_token_id}`, error, user)
             return this.errorResponse(
                 AppErrors.INTERNAL_SERVER_ERROR,
                 undefined,
@@ -311,6 +311,18 @@ export default class AccessTokensController extends BaseController {
             )
         )
 
-        return this.successResponse()
+        return this.successResponse<AccessToken>(currentAccessToken)
+    }
+
+    /**
+     * Revoke the currently used user's access token.
+     */
+    async revoke({ auth }: HttpContext) {
+        if (auth.user?.currentAccessToken) {
+            await User.accessTokens.delete(auth.user, auth.user.currentAccessToken.identifier)
+            return this.successResponse(auth.user?.currentAccessToken)
+        }
+
+        return this.errorResponse(AppErrors.ACCESS_TOKEN_NOT_FOUND)
     }
 }

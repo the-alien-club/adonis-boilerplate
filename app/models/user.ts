@@ -1,12 +1,13 @@
 import type { DateTime } from "luxon"
-import hash from "@adonisjs/core/services/hash"
-import { compose } from "@adonisjs/core/helpers"
-import { BaseModel, column, manyToMany } from "@adonisjs/lucid/orm"
-import { withAuthFinder } from "@adonisjs/auth/mixins/lucid"
+import { BaseModel, column, hasMany, manyToMany } from "@adonisjs/lucid/orm"
+import type { HasMany, ManyToMany } from "@adonisjs/lucid/types/relations"
+import Role from "#models/role"
 import type { AccessToken } from "@adonisjs/auth/access_tokens"
 import { DbAccessTokensProvider } from "@adonisjs/auth/access_tokens"
-import type { ManyToMany } from "@adonisjs/lucid/types/relations"
-import Role from "#models/role"
+import hash from "@adonisjs/core/services/hash"
+import { withAuthFinder } from "@adonisjs/auth/mixins/lucid"
+import { compose } from "@adonisjs/core/helpers"
+import { DbRememberMeTokensProvider } from "@adonisjs/auth/session"
 
 const AuthFinder = withAuthFinder(() => hash.use("scrypt"), {
     uids: ["email"],
@@ -21,10 +22,10 @@ export default class User extends compose(BaseModel, AuthFinder) {
     declare isLocked: boolean
 
     @column()
-    declare email: string
+    declare email: string | null
 
     @column()
-    declare username: string
+    declare username: string | null
 
     @column({ serializeAs: null })
     declare password: string
@@ -51,10 +52,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
     })
     declare roles: ManyToMany<typeof Role>
 
-    ///
-    /// The relationships with other tables would go here
-    ///
-
     // Dates
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime
@@ -64,6 +61,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
     // Access tokens for the user
     static accessTokens = DbAccessTokensProvider.forModel(User)
+
+    // Remember me tokens system for the session guard
+    static rememberMeTokens = DbRememberMeTokensProvider.forModel(User)
 
     // The current access token (only accessible directly via AdonisJS)
     declare currentAccessToken: AccessToken | null

@@ -1,21 +1,23 @@
 import { defineConfig } from "@adonisjs/auth"
 import type { InferAuthEvents, Authenticators } from "@adonisjs/auth/types"
+import { sessionGuard, sessionUserProvider } from "@adonisjs/auth/session"
 import { tokensGuard, tokensUserProvider } from "@adonisjs/auth/access_tokens"
-import { basicAuthGuard, basicAuthUserProvider } from "@adonisjs/auth/basic_auth"
 
 /**
- * The configuration settings for the auth module,
- * either via basic auth or access-token-based auth.
+ * The configuration settings for the auth module, either via session (default) auth
+ * or access-token-based auth.
  */
 const authConfig = defineConfig({
-    default: "accessTokens",
+    default: "session",
     guards: {
-        base64credentials: basicAuthGuard({
-            provider: basicAuthUserProvider({
+        session: sessionGuard({
+            useRememberMeTokens: true,
+            rememberMeTokensAge: "30d",
+            provider: sessionUserProvider({
                 model: () => import("#models/user"),
             }),
         }),
-        accessTokens: tokensGuard({
+        api: tokensGuard({
             provider: tokensUserProvider({
                 tokens: "accessTokens",
                 model: () => import("#models/user"),

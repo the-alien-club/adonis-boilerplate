@@ -2,7 +2,7 @@ import app from "@adonisjs/core/services/app"
 import type { HttpContext } from "@adonisjs/core/http"
 import { ExceptionHandler } from "@adonisjs/core/http"
 import { errors } from "@vinejs/vine"
-import type { ErrorObj } from "#types/requests"
+import type { ErrorObj, FailedRequest } from "#lib/utils/error_handling"
 
 export default class HttpExceptionHandler extends ExceptionHandler {
     /**
@@ -25,7 +25,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
                 data: error.messages,
             }
 
-            const response = {
+            const response: FailedRequest = {
                 success: false,
                 message: errorObj.message,
                 error: errorObj,

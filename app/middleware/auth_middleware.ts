@@ -4,6 +4,7 @@ import type { Authenticators } from "@adonisjs/auth/types"
 import logger from "@adonisjs/core/services/logger"
 import { userLog } from "#lib/utils/logger"
 import { AppErrors } from "#lib/errors"
+import USER_CONSTANTS from "#lib/constants/users"
 
 /**
  * Auth middleware is used authenticate HTTP requests and deny
@@ -19,20 +20,21 @@ export default class AuthMiddleware {
             guards?: (keyof Authenticators)[]
         } = {}
     ) {
+        if (!ctx) throw new Error("Context is undefined in 'AuthMiddleware'")
+        if (!ctx.auth) throw new Error("'Context.auth' is undefined")
+
         try {
-            await ctx.auth.authenticateUsing(options.guards, { loginRoute: "/signin" })
-        } catch (error) {
-            if (!ctx.auth.user) {
-                return ctx.response.forbidden({
-                    success: false,
-                    message: "You are not authorized to access this resource.",
-                    error: AppErrors.UNAUTHORIZED,
-                })
-            }
+            await ctx.auth.authenticateUsing(options.guards, { loginRoute: USER_CONSTANTS.SIGN_IN_REDIRECT })
+        } catch (_) {
+            return ctx.response.unauthorized({
+                success: false,
+                message: "You are not authorized to access this resource.",
+                error: AppErrors.UNAUTHORIZED,
+            })
         }
 
         if (!ctx.auth.user) {
-            return ctx.response.forbidden({
+            return ctx.response.unauthorized({
                 success: false,
                 message: "You are not authorized to access this resource.",
                 error: AppErrors.UNAUTHORIZED,
@@ -42,7 +44,7 @@ export default class AuthMiddleware {
         if (ctx.auth.user && ctx.auth.user.isLocked === true) {
             logger.info(userLog(ctx.auth.user, "tried to interact with the API but their account is locked"))
 
-            return ctx.response.forbidden({
+            return ctx.response.unauthorized({
                 success: false,
                 message: "Your account is locked. Please contact an administrator.",
                 error: AppErrors.LOCKED,

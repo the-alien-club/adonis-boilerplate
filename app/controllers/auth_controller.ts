@@ -4,16 +4,22 @@ import { tryCatchLog, userLog } from "#lib/utils/logger"
 import { AccessTokenScopeAbilities } from "#lib/utils/access_tokens"
 import Role from "#models/role"
 import User from "#models/user"
-import { credentialsValidator, userRegistrationValidator } from "#validators/auth_validator"
+import {
+    credentialsValidator,
+    credentialsValidatorForBearer,
+    userRegistrationValidator,
+} from "#validators/auth_validator"
 import type { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
+import USER_CONSTANTS from "#lib/constants/users"
 import type { AccessToken } from "@adonisjs/auth/access_tokens"
+import type { AuthenticatedUser } from "#shared/index"
 
 export default class AuthController extends BaseController {
     /**
      * Main user registration route.
      */
-    async signup({ request }: HttpContext) {
+    async signUp({ request }: HttpContext) {
         const { email, username, password, firstName, lastName } =
             await request.validateUsing(userRegistrationValidator)
 
@@ -27,7 +33,7 @@ export default class AuthController extends BaseController {
         let user: User
         try {
             user = await User.create({
-                isLocked: true,
+                isLocked: false,
                 email,
                 username,
                 password,
@@ -48,20 +54,54 @@ export default class AuthController extends BaseController {
         else this.errorResponse(AppErrors.ROLE_NOT_FOUND, null, "The default role for users was not found.")
 
         logger.debug(userLog(user, "signed up successfully"))
-        return this.successResponse(user)
+        return this.successResponse<AuthenticatedUser>(user)
     }
 
     /**
-     * Main user sign-in route (issue an access token that will be stored inside the user's session storage).
-     * Note that `expiresIn` is optional and is expressed in seconds.
+     * Main user sign-in route, using session with cookies via the frontend app.
      */
-    async signin({ request }: HttpContext) {
-        const { email, password, expiresIn } = await request.validateUsing(credentialsValidator)
+    async signIn({ request, auth }: HttpContext) {
+        const { email, password, rememberMe } = await request.validateUsing(credentialsValidator)
 
         let user: User | null
         try {
             user = await User.verifyCredentials(email, password)
         } catch (error) {
+            tryCatchLog(`failed to verify credentials for user with email ${email}`, error)
+            return this.errorResponse(AppErrors.INVALID_CREDENTIALS, null, "Invalid credentials.")
+        }
+
+        if (user.isLocked) {
+            logger.info(userLog(user, "tried to sign in but their account is locked"))
+            return this.errorResponse(
+                AppErrors.LOCKED,
+                undefined,
+                "Your account is locked. Please contact an administrator."
+            )
+        }
+
+        try {
+            await auth.use("session").login(user, rememberMe)
+        } catch (error) {
+            tryCatchLog(`failed to log in user with email ${email}`, error)
+            return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This user could not be logged in.")
+        }
+
+        logger.debug(userLog(user, "signed in successfully"))
+        return this.successResponse<AuthenticatedUser>(user)
+    }
+
+    /**
+     * Secondary sign-in route, using access (= bearer) tokens via the Authorization header.
+     */
+    async signInForBearer({ request }: HttpContext) {
+        const { email, password, expiresIn } = await request.validateUsing(credentialsValidatorForBearer)
+
+        let user: User | null
+        try {
+            user = await User.verifyCredentials(email, password)
+        } catch (error) {
+            tryCatchLog(`failed to verify credentials for user with email ${email}`, error)
             return this.errorResponse(AppErrors.INVALID_CREDENTIALS, null, "Invalid credentials.")
         }
 
@@ -90,6 +130,14 @@ export default class AuthController extends BaseController {
         }
 
         logger.debug(userLog(user, "signed in successfully, issuing a new access token"))
-        return this.successResponse(accessToken)
+        return this.successResponse<AccessToken>(accessToken)
+    }
+
+    /**
+     * Sign out user from the session.
+     */
+    async signOut({ auth }: HttpContext) {
+        if (auth.use("session").isAuthenticated) await auth.use("session").logout()
+        return this.successResponse()
     }
 }

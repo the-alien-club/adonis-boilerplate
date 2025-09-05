@@ -33,18 +33,28 @@ export enum AccessTokenAbility {
  */
 export const AccessTokenScopeAbilities: Record<AccessTokenScope, AccessTokenAbility[]> = {
     "unrestricted": [AccessTokenAbility.UNRESTRICTED],
-    "api-key": [AccessTokenAbility.ROLE_READ],
-    "api-secret": [AccessTokenAbility.ROLE_READ, AccessTokenAbility.USER_READ, AccessTokenAbility.USER_WRITE],
+    "api-key": [AccessTokenAbility.ACCESS_TOKEN_READ, AccessTokenAbility.ROLE_READ, AccessTokenAbility.USER_READ],
+    "api-secret": [
+        AccessTokenAbility.ACCESS_TOKEN_READ,
+        AccessTokenAbility.ACCESS_TOKEN_WRITE,
+        AccessTokenAbility.ROLE_READ,
+        AccessTokenAbility.USER_READ,
+        AccessTokenAbility.USER_WRITE,
+    ],
 }
 
 /**
- * Check if a user's access token has a specific ability, returns true for any ability if `*` (unrestricted).
+ * Check if a user's access token has a specific ability, returns true for any ability if `*` (unrestricted),
+ * note that session guard authentication is also considered and treated as an unrestricted ability.
  * @param user The user to check (null if no user).
  * @param ability The ability to check for.
  * @returns Whether the user has the ability.
  */
 export function userAccessTokenHasAbility(user: User | null, ability: AccessTokenAbility): boolean {
-    if (!user || !user.currentAccessToken) return false
+    if (!user) return false
+
+    // If signed in with no access token => session guard
+    if (!user.currentAccessToken) return true
 
     if (user.currentAccessToken.abilities.includes(AccessTokenAbility.UNRESTRICTED)) return true
     return user.currentAccessToken?.abilities.includes(ability) || false

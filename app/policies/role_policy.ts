@@ -1,9 +1,9 @@
 import type User from "#models/user"
 import type { AuthorizerResponse } from "@adonisjs/bouncer/types"
 import { hasRole } from "#lib/utils/roles"
-import { AccessTokenAbility, userAccessTokenHasAbility } from "#lib/utils/access_tokens"
-import type Role from "#models/role"
 import BasePolicy from "#policies/templates/base_policy"
+import type Role from "#models/role"
+import { AccessTokenAbility, userAccessTokenHasAbility } from "#lib/utils/access_tokens"
 
 export default class AbiPolicy extends BasePolicy {
     // Admin only
@@ -27,6 +27,21 @@ export default class AbiPolicy extends BasePolicy {
     // Every user can view one of their own role
     show(user: User | null, role: Role): AuthorizerResponse {
         return userAccessTokenHasAbility(user, AccessTokenAbility.ROLE_READ) && hasRole(user, role.slug)
+    }
+
+    // Every user can view some of their own roles
+    showBatch(user: User | null, roles: Role[]): AuthorizerResponse {
+        let hasAccess = true
+
+        for (const role of roles) {
+            const res = this.show(user, role)
+            if (!res) {
+                hasAccess = false
+                break
+            }
+        }
+
+        return hasAccess
     }
 
     // Admin only

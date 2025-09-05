@@ -1,4 +1,5 @@
-import type { ErrorObj, FailedRequest } from "#types/requests"
+import type { ErrorObj, FailedRequest, SuccessfulRequest } from "#lib/utils/error_handling"
+import type { IndexedRequestMeta } from "#types/adonis"
 import { inject } from "@adonisjs/core"
 // Warning: Adding "type" to this import will BREAK the injection system.
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -22,23 +23,30 @@ export default class BaseController {
      * Returns a properly formatted success response.
      * @param data Data to be sent in the response (optional, defaults to `null`).
      * @param meta Metadata to be sent in the response (optional, used for pagination).
+     * @returns The success response object.
      */
-    async successResponse(data?: any, meta?: any) {
-        let response: any = {
-            success: true,
-            data: this._checkDataValidity(data) ? data : null,
-        }
-
+    async successResponse<T>(data?: any): Promise<SuccessfulRequest<T>>
+    async successResponse<T>(data: any, meta: any): Promise<SuccessfulRequest<T> & { meta: IndexedRequestMeta }>
+    async successResponse<T>(data?: any, meta?: any): Promise<SuccessfulRequest<T>> {
         // Include meta (on top) only if it exists
         if (meta) {
-            response = {
+            const response = {
                 success: true,
                 meta: meta,
                 data: this._checkDataValidity(data) ? data : null,
             }
+
+            this.ctx.response.send(response)
+            return response as SuccessfulRequest<T>
+        }
+
+        const response = {
+            success: true,
+            data: this._checkDataValidity(data) ? data : null,
         }
 
         this.ctx.response.send(response)
+        return response as SuccessfulRequest<T>
     }
 
     /**
@@ -46,6 +54,7 @@ export default class BaseController {
      * @param error Error code constant to be sent in the response.
      * @param data Additional data to be sent in the response (optional).
      * @param message Error message to be sent in the response (optional, defaults to the internal error message).
+     * @returns Null for Tuyau type inference.
      */
     async errorResponse(error: ErrorObj, data: unknown | null = null, message?: string) {
         const response: FailedRequest = {
@@ -55,8 +64,6 @@ export default class BaseController {
         }
 
         this.ctx.response.status(error.status).send(response)
-
-        return null
     }
 
     /**

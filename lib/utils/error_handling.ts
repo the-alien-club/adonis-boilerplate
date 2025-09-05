@@ -1,5 +1,57 @@
 import { stringify } from "#lib/utils/json"
-import type { ErrorObj, FailedRequest } from "#types/requests"
+import vine from "@vinejs/vine"
+import type { Infer } from "@vinejs/vine/types"
+
+/**
+ * The Vine.js schema for an error object.
+ */
+export const errorObjSchema = vine.object({
+    status: vine.number().positive(),
+    name: vine.string(),
+    message: vine.string(),
+    data: vine.any(),
+})
+
+/**
+ * The type definition for an error object.
+ */
+export type ErrorObj = Infer<typeof errorObjSchema>
+
+/**
+ * The type for a successful request, containing the data of type T.
+ *
+ * The reason for the duplicate `success` field is to allow for the `SuccessfulRequest` type to be used
+ * directly.
+ */
+export type SuccessfulRequest<T> = {
+    success: true
+    data: T
+}
+
+/**
+ * The type for a failed request, containing the error message and the error object.
+ *
+ * The reason for the duplicate `success` field is to allow for the `FailedRequest` type to be used
+ * directly.
+ */
+export type FailedRequest = {
+    success: false
+    message: string
+    error: ErrorObj
+}
+
+/**
+ * Returns a failed request in case the `success` field is set to `false`,
+ * otherwise returns a successful request with a data object of type T.
+ *
+ * **Example**:
+ * ```ts
+ * export async function inviteUser(): Promise<RequestResult<Access>>
+ * ```
+ * - Will return the "Access" type if result.success is true.
+ * - Otherwise, will return the "FailedRequest" type.
+ */
+export type RequestResult<T> = ({ success: true } & SuccessfulRequest<T>) | ({ success: false } & FailedRequest)
 
 /**
  * Formats an `ErrorObj` into a standard error sent back by an API endpoint.
@@ -51,7 +103,6 @@ export function parseCRUDError(error: unknown): FailedRequest {
 
     try {
         try {
-            // biome-ignore lint/suspicious/noExplicitAny: Cannot infer the type of the error
             errorString = (error as any).toString()
         } catch (_) {
             errorString = stringify(error)
@@ -108,14 +159,14 @@ export function formatMessageAsStringifiedError(message: string, error?: unknown
         }
     }
 
-    const res = stringify({
+    const response = stringify({
         success: false,
         message,
         error: errorObj,
     })
 
     // Ensure that no "Error: " or line break ends up in the message
-    return res.replaceAll("Error: ", "").replaceAll("\n", " ")
+    return response.replaceAll("Error: ", "").replaceAll("\n", " ")
 }
 
 /**

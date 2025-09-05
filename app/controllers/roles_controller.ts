@@ -3,10 +3,16 @@ import type { HttpContext } from "@adonisjs/core/http"
 import RolePolicy from "#policies/role_policy"
 import Role from "#models/role"
 import type User from "#models/user"
-import { roleCreationValidator, roleUpdateValidator } from "#validators/role_validator"
+import { roleCreationValidator, rolesShowBatchValidator, roleUpdateValidator } from "#validators/role_validator"
 import { AppErrors } from "#lib/errors"
 import { tryCatchLog } from "#lib/utils/logger"
-import { isValidIntId } from "#lib/utils/miscellaneous"
+import { isValidIntId, parseQueryNumberArray, parseQueryStringArray } from "#lib/utils/miscellaneous"
+import type { ReadAttributes } from "#types/adonis"
+
+/**
+ * The returned formatted role type.
+ */
+export type FormattedRole = ReadAttributes<Role>
 
 export default class RolesController extends BaseController {
     /**
@@ -27,7 +33,7 @@ export default class RolesController extends BaseController {
             .paginate(options.page, options.limit)
 
         const tmp = roles.toJSON()
-        return this.successResponse(tmp.data, tmp.meta)
+        return this.successResponse<FormattedRole[]>(tmp.data, tmp.meta)
     }
 
     /**
@@ -48,7 +54,7 @@ export default class RolesController extends BaseController {
             .paginate(options.page, options.limit)
 
         const tmp = roles.toJSON()
-        return this.successResponse(tmp.data, tmp.meta)
+        return this.successResponse<FormattedRole[]>(tmp.data, tmp.meta)
     }
 
     /**
@@ -72,7 +78,7 @@ export default class RolesController extends BaseController {
             return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This role could not be created.")
         }
 
-        return this.successResponse(role)
+        return this.successResponse<FormattedRole>(role)
     }
 
     /**
@@ -90,7 +96,35 @@ export default class RolesController extends BaseController {
             return this.errorResponse(AppErrors.UNAUTHORIZED)
         }
 
-        return this.successResponse(role)
+        return this.successResponse<FormattedRole>(role)
+    }
+
+    /**
+     * Get a list of roles per IDs or per slug.
+     */
+    async showBatch({ auth, bouncer, request }: HttpContext) {
+        const { ids, slugs } = await request.validateUsing(rolesShowBatchValidator)
+
+        const parsedIds = ids ? parseQueryNumberArray(ids) : []
+        const parsedSlugs = slugs ? parseQueryStringArray(slugs) : []
+        if (parsedIds.length === 0 && parsedSlugs.length === 0) {
+            return this.errorResponse(AppErrors.EMPTY_DATA)
+        }
+
+        let roles: Role[] = []
+        try {
+            roles = await Role.query().whereIn("id", parsedIds).orWhereIn("slug", parsedSlugs)
+        } catch (error) {
+            tryCatchLog(`failed to retrieve roles:`, error, auth.user)
+            return this.errorResponse(AppErrors.ROLE_NOT_FOUND, undefined, `Failed to retrieve roles: ${error.message}`)
+        }
+
+        if (roles.length === 0) return this.errorResponse(AppErrors.ROLE_NOT_FOUND)
+        if (await bouncer.with(RolePolicy).denies("showBatch", roles)) {
+            return this.errorResponse(AppErrors.UNAUTHORIZED)
+        }
+
+        return this.successResponse<FormattedRole[]>(roles)
     }
 
     /**
@@ -115,7 +149,7 @@ export default class RolesController extends BaseController {
         role.description = description ?? role.description
         await role.save()
 
-        return this.successResponse(role)
+        return this.successResponse<FormattedRole>(role)
     }
 
     /**
@@ -140,6 +174,6 @@ export default class RolesController extends BaseController {
             return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This role could not be deleted.")
         }
 
-        return this.successResponse(role)
+        return this.successResponse<FormattedRole>(role)
     }
 }

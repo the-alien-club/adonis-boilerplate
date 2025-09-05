@@ -1,5 +1,5 @@
+import type { ErrorObj } from "#lib/utils/error_handling"
 import { BaseErrors } from "#lib/utils/error_handling"
-import type { ErrorObj } from "#types/requests"
 
 /**
  * Contains all the available errors for the application.
