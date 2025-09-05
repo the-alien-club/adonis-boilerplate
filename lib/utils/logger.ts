@@ -21,7 +21,7 @@ export function userLog(user: User | undefined, action: string): string {
  * @param error The error object to log (optional).
  * @param user The user associated with the error (optional).
  */
-export function tryCatchLog(message: string, error?: Error, user?: User): void {
-    const errorMessage = error ? error.message : "Unknown Error"
+export function tryCatchLog(message: string, error?: unknown, user?: User): void {
+    const errorMessage = error instanceof Error ? error.message : "Unknown Error"
     logger.error(`${message}${user ? ` for user ${user.id}` : ""}: ${errorMessage}`)
 }
