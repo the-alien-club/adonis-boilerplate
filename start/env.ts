@@ -10,7 +10,7 @@ export default await Env.create(
     process.env.NO_BACKEND_ENV === "true"
         ? {
               // Still needed  by any AdonisJS core features
-              APP_KEY: Env.schema.string(),
+              BACKEND_APP_KEY: Env.schema.string(),
           }
         : {
               // Node env
