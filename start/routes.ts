@@ -34,6 +34,12 @@ router.post("/sign-up", [AuthController, "signUp"])
 router.post("/sign-in", [AuthController, "signIn"])
 router.post("/sign-in/bearer", [AuthController, "signInForBearer"])
 
+// ==============================================================
+//  Public routes: Accessible without credentials / access token
+// ==============================================================
+// TODO: Should off course be highly rate-limited to avoid abuse
+router.get("/users/exists", [UsersController, "exists"])
+
 // ==================================================================
 //  Logged-in user routes: Accessible via credentials / access token
 // ==================================================================

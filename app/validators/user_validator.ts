@@ -28,3 +28,18 @@ export const userUpdateValidator = vine.compile(
         isStealth: vine.boolean().optional(),
     })
 )
+
+/**
+ * Validator for the user existence check.
+ */
+export const userExistenceValidator = vine.compile(
+    vine.object({
+        email: vine.string().email().optional().requiredIfMissing("username"),
+        username: vine
+            .string()
+            .minLength(1)
+            .maxLength(DB_CONSTANTS.MAX_USERNAME_LENGTH)
+            .optional()
+            .requiredIfMissing("email"),
+    })
+)

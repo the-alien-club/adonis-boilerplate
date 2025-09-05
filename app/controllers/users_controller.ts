@@ -6,7 +6,7 @@ import { isValidIntId, parseQueryNumberArray } from "#lib/utils/miscellaneous"
 import User from "#models/user"
 import UserPolicy from "#policies/user_policy"
 import type { AuthenticatedUser, RestrictedUser, UserWithPotentialRestriction } from "#shared/index"
-import { usersShowBatchValidator, userUpdateValidator } from "#validators/user_validator"
+import { userExistenceValidator, usersShowBatchValidator, userUpdateValidator } from "#validators/user_validator"
 import type { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
 
@@ -256,5 +256,17 @@ export default class UsersController extends BaseController {
     async me({ auth }: HttpContext) {
         if (auth.user) return this.successResponse<AuthenticatedUser>(auth.user)
         return this.errorResponse(AppErrors.UNAUTHORIZED)
+    }
+
+    /**
+     * Check if a user exists by their email or username.
+     */
+    async exists({ request }: HttpContext) {
+        const { email, username } = await request.validateUsing(userExistenceValidator)
+        const user = (await User.findBy("email", email)) || (await User.findBy("username", username))
+        return this.successResponse<{ exists: boolean; emailVerifiedAt: string | null }>({
+            exists: !!user,
+            emailVerifiedAt: user?.emailVerifiedAt || null,
+        })
     }
 }
