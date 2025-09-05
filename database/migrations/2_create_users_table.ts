@@ -5,6 +5,8 @@ export default class UsersTable extends BaseSchema {
     protected tableName = "users"
 
     async up() {
+        if (await this.schema.hasTable(this.tableName)) return
+
         this.schema.createTable(this.tableName, (table) => {
             table.increments("id").primary()
 
@@ -16,6 +18,7 @@ export default class UsersTable extends BaseSchema {
             table.string("last_name", DB_CONSTANTS.MAX_NAME_LENGTH).nullable()
             table.string("description", DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).nullable()
             table.string("image_url", DB_CONSTANTS.MAX_URL_LENGTH).nullable()
+            table.bigInteger("tokens").notNullable()
 
             // Dates
             table.timestamp("created_at", { useTz: true }).notNullable()

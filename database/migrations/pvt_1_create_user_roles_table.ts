@@ -4,6 +4,8 @@ export default class PvtUserRolesTable extends BaseSchema {
     protected tableName = "user_roles"
 
     async up() {
+        if (await this.schema.hasTable(this.tableName)) return
+
         this.schema.createTable(this.tableName, (table) => {
             table.increments("id").primary()
 
