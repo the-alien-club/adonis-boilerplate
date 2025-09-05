@@ -59,6 +59,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     declare updatedAt: DateTime
 
+    @column.dateTime()
+    declare emailVerifiedAt: DateTime | null
+
+    @column.dateTime()
+    declare lastLoginAt: DateTime | null
+
     // Access tokens for the user
     static accessTokens = DbAccessTokensProvider.forModel(User)
 

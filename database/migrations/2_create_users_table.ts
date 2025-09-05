@@ -23,6 +23,8 @@ export default class UsersTable extends BaseSchema {
             // Dates
             table.timestamp("created_at", { useTz: true }).notNullable()
             table.timestamp("updated_at", { useTz: true }).notNullable()
+            table.timestamp("email_verified_at", { useTz: true }).nullable()
+            table.timestamp("last_login_at", { useTz: true }).nullable()
         })
     }
 
