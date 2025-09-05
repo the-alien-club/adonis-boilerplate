@@ -1,7 +1,7 @@
 {
     "name": "adonis-boilerplate",
     "productName": "AdonisJS Boilerplate",
-    "version": "1.6.6",
+    "version": "1.7.0",
     "description": "An AdonisJS and Lucid boilerplate integrating authentication, a role system, token scopes and more!",
     "author": "Alien <contact@alien.club> (https://www.alien.club/)",
     "license": "MIT",
