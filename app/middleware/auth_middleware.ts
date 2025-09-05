@@ -5,6 +5,7 @@ import logger from "@adonisjs/core/services/logger"
 import { userLog } from "#lib/utils/logger"
 import { AppErrors } from "#lib/errors"
 import USER_CONSTANTS from "#lib/constants/users"
+import { DateTime } from "luxon"
 
 /**
  * Auth middleware is used authenticate HTTP requests and deny
@@ -50,6 +51,10 @@ export default class AuthMiddleware {
                 error: AppErrors.LOCKED,
             })
         }
+
+        // Update the last login time
+        ctx.auth.user.lastLoginAt = DateTime.now()
+        await ctx.auth.user.save()
 
         return next()
     }
