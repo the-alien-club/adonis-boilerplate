@@ -87,7 +87,7 @@ export default class AuthController extends BaseController {
             return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This user could not be logged in.")
         }
 
-        logger.debug(userLog(user, "signed in successfully"))
+        logger.debug(userLog(user, "signed in successfully using session"))
         return this.successResponse<AuthenticatedUser>(user)
     }
 
