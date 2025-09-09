@@ -140,4 +140,11 @@ export default class AuthController extends BaseController {
         if (auth.use("session").isAuthenticated) await auth.use("session").logout()
         return this.successResponse()
     }
+
+    /**
+     * Returns wether the user is signed in or not (with no error).
+     */
+    async isSignedIn({ auth }: HttpContext) {
+        return this.successResponse<boolean>(auth.use("session").isAuthenticated)
+    }
 }
