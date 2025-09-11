@@ -1,3 +1,4 @@
+import type { QueryOptions } from "#controllers/templates/base_controller"
 import type User from "#models/user"
 import type { IndexedRequestMeta, ReadAttributes } from "#types/adonis"
 import type { BaseModel } from "@adonisjs/lucid/orm"
@@ -60,4 +61,5 @@ export type {
 
     // Miscellaneous
     IndexedRequestMeta,
+    QueryOptions,
 }
