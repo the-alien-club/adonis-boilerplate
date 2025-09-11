@@ -19,7 +19,7 @@ export const userRegistrationValidator = vine.compile(
 )
 
 /**
- * Validator for the user credentials.
+ * Validator for user credentials.
  */
 export const credentialsValidator = vine.compile(
     vine.object({
@@ -30,7 +30,7 @@ export const credentialsValidator = vine.compile(
 )
 
 /**
- * Validator for the user credentials, including an optional "expiredIn" field for bearer token
+ * Validator for user credentials, including an optional "expiredIn" field for bearer token
  * authentication.
  */
 export const credentialsValidatorForBearer = vine.compile(

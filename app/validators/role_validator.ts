@@ -13,7 +13,7 @@ export const roleCreationValidator = vine.compile(
 )
 
 /**
- * Validator for the batch role retrieval.
+ * Validator for a batch role retrieval.
  */
 export const rolesShowBatchValidator = vine.compile(
     vine.object({

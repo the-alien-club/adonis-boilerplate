@@ -2,7 +2,7 @@ import DB_CONSTANTS from "#lib/constants/db"
 import vine from "@vinejs/vine"
 
 /**
- * Validator for the batch user retrieval.
+ * Validator for a batch user retrieval.
  */
 export const usersShowBatchValidator = vine.compile(
     vine.object({
@@ -29,7 +29,7 @@ export const userUpdateValidator = vine.compile(
 )
 
 /**
- * Validator for the user existence check.
+ * Validator for a user existence check.
  */
 export const userExistenceValidator = vine.compile(
     vine.object({

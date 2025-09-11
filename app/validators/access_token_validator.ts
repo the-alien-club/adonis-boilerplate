@@ -1,7 +1,7 @@
 import vine from "@vinejs/vine"
 
 /**
- * Validator for the access token creation.
+ * Validator for an access token creation.
  */
 export const accessTokenCreationValidator = vine.compile(
     vine.object({
@@ -11,7 +11,7 @@ export const accessTokenCreationValidator = vine.compile(
 )
 
 /**
- * Validator for the access token update (refresh).
+ * Validator for an access token update (refresh).
  */
 export const accessTokenUpdateValidator = vine.compile(
     vine.object({
