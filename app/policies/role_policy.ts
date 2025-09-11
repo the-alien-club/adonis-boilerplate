@@ -5,7 +5,7 @@ import BasePolicy from "#policies/templates/base_policy"
 import type Role from "#models/role"
 import { AccessTokenAbility, userAccessTokenHasAbility } from "#lib/utils/access_tokens"
 
-export default class AbiPolicy extends BasePolicy {
+export default class RolePolicy extends BasePolicy {
     // Admin only
     // Only admins can view all roles
     index(): AuthorizerResponse {
