@@ -11,7 +11,6 @@ import {
 } from "#validators/auth_validator"
 import type { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
-import USER_CONSTANTS from "#lib/constants/users"
 import type { AccessToken } from "@adonisjs/auth/access_tokens"
 import type { AuthenticatedUser } from "#shared/index"
 
@@ -27,7 +26,7 @@ export default class AuthController extends BaseController {
         // Both email and username are unique, so we need to check if the user already exists.
         if (email && (await User.findBy("email", email))) return this.errorResponse(AppErrors.EMAIL_ALREADY_EXISTS)
         if (username && (await User.findBy("username", username))) {
-            return this.errorResponse(AppErrors.USERNAME_ALREADY_EXISTS)
+            return this.errorResponse(AppErrors.USERNAME_ALREADY_EXISTS, undefined, "This username is already taken.")
         }
 
         let user: User
@@ -58,7 +57,7 @@ export default class AuthController extends BaseController {
     }
 
     /**
-     * Main user sign-in route, using session with cookies via the frontend app.
+     * Main user sign in route, using session with cookies via the frontend app.
      */
     async signIn({ request, auth }: HttpContext) {
         const { email, password, rememberMe } = await request.validateUsing(credentialsValidator)
@@ -83,8 +82,8 @@ export default class AuthController extends BaseController {
         try {
             await auth.use("session").login(user, rememberMe)
         } catch (error) {
-            tryCatchLog(`failed to log in user with email ${email}`, error)
-            return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This user could not be logged in.")
+            tryCatchLog(`failed to sign in user with email ${email}`, error)
+            return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This user could not be signed in.")
         }
 
         logger.debug(userLog(user, "signed in successfully using session"))
@@ -92,7 +91,7 @@ export default class AuthController extends BaseController {
     }
 
     /**
-     * Secondary sign-in route, using access (= bearer) tokens via the Authorization header.
+     * Secondary sign in route, using access (= bearer) tokens via the Authorization header.
      */
     async signInForBearer({ request }: HttpContext) {
         const { email, password, expiresIn } = await request.validateUsing(credentialsValidatorForBearer)
@@ -145,6 +144,13 @@ export default class AuthController extends BaseController {
      * Returns wether the user is signed in or not (with no error).
      */
     async isSignedIn({ auth }: HttpContext) {
+        await auth
+            .use("session")
+            .authenticate()
+            .catch(() => {
+                return this.successResponse<boolean>(false)
+            })
+
         return this.successResponse<boolean>(auth.use("session").isAuthenticated)
     }
 }

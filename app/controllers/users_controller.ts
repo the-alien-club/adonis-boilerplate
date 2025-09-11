@@ -263,7 +263,11 @@ export default class UsersController extends BaseController {
      */
     async exists({ request }: HttpContext) {
         const { email, username } = await request.validateUsing(userExistenceValidator)
-        const user = (await User.findBy("email", email)) || (await User.findBy("username", username))
+
+        let user: User | null = null
+        if (email) user = await User.findBy("email", email)
+        else if (username) user = await User.findBy("username", username)
+
         return this.successResponse<{ exists: boolean; emailVerifiedAt: string | null }>({
             exists: !!user,
             emailVerifiedAt: user?.emailVerifiedAt || null,

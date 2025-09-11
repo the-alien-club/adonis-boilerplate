@@ -11,14 +11,6 @@ const pck = createRequire(import.meta.url)(path.join(rootPath, "package.json"))
  * The main configuration for Tuyau E2E.
  */
 const tuyauConfig = defineConfig({
-    codegen: {
-        // definitions: {
-        //     only: [],
-        // },
-        // routes: {
-        //     only: [],
-        // },
-    },
     openapi: {
         exclude: [/admin/],
         documentation: {
