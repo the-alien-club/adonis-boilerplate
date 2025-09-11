@@ -8,7 +8,7 @@ import { HttpContext } from "@adonisjs/core/http"
 /**
  * The type for query options that can be applied to the indexation methods.
  */
-export type QueryOptions = {
+export type IndexedRequestQueryOptions = {
     page: number
     limit: number
     orderBy: string
@@ -81,7 +81,7 @@ export default class BaseController {
      * @param queries The request queries record.
      * @returns The options object (pagination & sorting).
      */
-    getQueryOptions(queries: Record<string, any>): QueryOptions {
+    getQueryOptions(queries: Record<string, any>): IndexedRequestQueryOptions {
         const page = queries.page ? Number(queries.page) : 1
         const limit = queries.limit ? Number(queries.limit) : 10
         const orderBy = queries.orderBy ? queries.orderBy : "created_at"
