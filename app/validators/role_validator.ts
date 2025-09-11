@@ -6,9 +6,9 @@ import vine from "@vinejs/vine"
  */
 export const roleCreationValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH),
-        slug: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_SLUG_LENGTH).regex(DB_CONSTANTS.SLUG_REGEX),
-        description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH),
+        name: vine.string().minLength(1),
+        slug: vine.string().minLength(1).regex(DB_CONSTANTS.SLUG_REGEX),
+        description: vine.string().minLength(1),
     })
 )
 
@@ -27,13 +27,8 @@ export const rolesShowBatchValidator = vine.compile(
  */
 export const roleUpdateValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).optional(),
-        slug: vine
-            .string()
-            .minLength(1)
-            .maxLength(DB_CONSTANTS.MAX_SLUG_LENGTH)
-            .regex(DB_CONSTANTS.SLUG_REGEX)
-            .optional(),
-        description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).optional(),
+        name: vine.string().minLength(1).optional(),
+        slug: vine.string().minLength(1).regex(DB_CONSTANTS.SLUG_REGEX).optional(),
+        description: vine.string().minLength(1).optional(),
     })
 )

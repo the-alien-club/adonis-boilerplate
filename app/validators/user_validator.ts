@@ -18,12 +18,11 @@ export const userUpdateValidator = vine.compile(
         username: vine
             .string()
             .minLength(DB_CONSTANTS.MIN_USERNAME_LENGTH)
-            .maxLength(DB_CONSTANTS.MAX_USERNAME_LENGTH)
             .regex(DB_CONSTANTS.USERNAME_REGEX)
             .optional(),
-        firstName: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).optional(),
-        lastName: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_NAME_LENGTH).optional(),
-        description: vine.string().minLength(1).maxLength(DB_CONSTANTS.MAX_DESCRIPTION_LENGTH).optional(),
+        firstName: vine.string().minLength(1).optional(),
+        lastName: vine.string().minLength(1).optional(),
+        description: vine.string().minLength(1).optional(),
         imageUrl: vine.string().url().optional(),
         isStealth: vine.boolean().optional(),
     })
@@ -35,11 +34,6 @@ export const userUpdateValidator = vine.compile(
 export const userExistenceValidator = vine.compile(
     vine.object({
         email: vine.string().email().optional().requiredIfMissing("username"),
-        username: vine
-            .string()
-            .minLength(1)
-            .maxLength(DB_CONSTANTS.MAX_USERNAME_LENGTH)
-            .optional()
-            .requiredIfMissing("email"),
+        username: vine.string().minLength(1).optional().requiredIfMissing("email"),
     })
 )
