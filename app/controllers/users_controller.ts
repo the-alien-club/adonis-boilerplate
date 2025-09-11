@@ -59,11 +59,11 @@ export default class UsersController extends BaseController {
             return this.successResponse<{ isRestricted: true; user: RestrictedUser }>({
                 isRestricted: true,
                 user: {
-                    username: user.username!,
-                    description: user.description!,
-                    imageUrl: user.imageUrl!,
-                    createdAt: user.createdAt!.toJSON(),
-                } satisfies RestrictedUser,
+                    username: user.username,
+                    description: user.description,
+                    imageUrl: user.imageUrl,
+                    createdAt: user.createdAt.toJSON(),
+                } as RestrictedUser,
             })
         }
 
