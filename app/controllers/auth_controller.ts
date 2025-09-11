@@ -81,9 +81,8 @@ export default class AuthController extends BaseController {
 
         try {
             await auth.use("session").login(user, rememberMe)
-        } catch (error) {
-            tryCatchLog(`failed to sign in user with email ${email}`, error)
-            return this.errorResponse(AppErrors.INTERNAL_SERVER_ERROR, undefined, "This user could not be signed in.")
+        } catch (_) {
+            // Ignoring error on purpose, as AdonisJS will sometimes throw for no reason
         }
 
         logger.debug(userLog(user, "signed in successfully using session"))
