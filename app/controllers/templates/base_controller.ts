@@ -1,4 +1,4 @@
-import type { ErrorObj, FailedRequest, SuccessfulRequest } from "#lib/utils/error_handling"
+import type { SuccessfulRequest, ErrorObj, FailedRequest } from "#lib/utils/error_handling"
 import type { IndexedRequestMeta } from "#types/adonis"
 import { inject } from "@adonisjs/core"
 // Warning: Adding "type" to this import will BREAK the injection system.
@@ -35,9 +35,12 @@ export default class BaseController {
      * @param meta Metadata to be sent in the response (optional, used for pagination).
      * @returns The success response object.
      */
-    async successResponse<T>(data?: any): Promise<SuccessfulRequest<T>>
-    async successResponse<T>(data: any, meta: any): Promise<SuccessfulRequest<T> & { meta: IndexedRequestMeta }>
-    async successResponse<T>(data?: any, meta?: any): Promise<SuccessfulRequest<T>> {
+    protected async successResponse<T>(data?: any): Promise<SuccessfulRequest<T>>
+    protected async successResponse<T>(
+        data: any,
+        meta: any
+    ): Promise<SuccessfulRequest<T> & { meta: IndexedRequestMeta }>
+    protected async successResponse<T>(data?: any, meta?: any): Promise<SuccessfulRequest<T>> {
         // Include meta (on top) only if it exists
         if (meta) {
             const response = {
@@ -66,7 +69,7 @@ export default class BaseController {
      * @param message Error message to be sent in the response (optional, defaults to the internal error message).
      * @returns Null for Tuyau type inference.
      */
-    async errorResponse(error: ErrorObj, data: unknown | null = null, message?: string) {
+    protected async errorResponse(error: ErrorObj, data: unknown | null = null, message?: string) {
         const response: FailedRequest = {
             success: false,
             message: message ?? error.message,
@@ -81,7 +84,7 @@ export default class BaseController {
      * @param queries The request queries record.
      * @returns The options object (pagination & sorting).
      */
-    getQueryOptions(queries: Record<string, any>): IndexedRequestQueryOptions {
+    protected getQueryOptions(queries: Record<string, any>): IndexedRequestQueryOptions {
         const page = queries.page ? Number(queries.page) : 1
         const limit = queries.limit ? Number(queries.limit) : 10
         const orderBy = queries.orderBy ? queries.orderBy : "created_at"
