@@ -86,7 +86,11 @@ export default class RolesController extends BaseController {
      */
     async show({ bouncer, params }: HttpContext) {
         if (!isValidIntId(params.role_id)) {
-            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "Role ID is required.")
+            return this.errorResponse(
+                AppErrors.INVALID_ID_FORMAT,
+                undefined,
+                `The role ID '${params.role_id}' is not a valid integer.`
+            )
         }
 
         const role = await Role.find(params.role_id)
@@ -138,7 +142,11 @@ export default class RolesController extends BaseController {
         }
 
         if (!isValidIntId(params.role_id)) {
-            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "Role ID is required.")
+            return this.errorResponse(
+                AppErrors.INVALID_ID_FORMAT,
+                undefined,
+                `The role ID '${params.role_id}' is not a valid integer.`
+            )
         }
 
         const role = await Role.find(params.role_id)
@@ -163,7 +171,11 @@ export default class RolesController extends BaseController {
         }
 
         if (!isValidIntId(params.role_id)) {
-            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "Role ID is required.")
+            return this.errorResponse(
+                AppErrors.INVALID_ID_FORMAT,
+                undefined,
+                `The role ID '${params.role_id}' is not a valid integer.`
+            )
         }
 
         const role = await Role.find(params.role_id)

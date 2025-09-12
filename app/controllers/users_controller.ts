@@ -205,7 +205,11 @@ export default class UsersController extends BaseController {
         }
 
         if (!isValidIntId(params.user_id)) {
-            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "User ID is required.")
+            return this.errorResponse(
+                AppErrors.INVALID_ID_FORMAT,
+                undefined,
+                `The user ID '${params.user_id}' is not a valid integer.`
+            )
         }
 
         const user = await User.find(params.user_id)
@@ -232,7 +236,11 @@ export default class UsersController extends BaseController {
         }
 
         if (!isValidIntId(params.user_id)) {
-            return this.errorResponse(AppErrors.MISSING_PARAMETER, undefined, "User ID is required.")
+            return this.errorResponse(
+                AppErrors.INVALID_ID_FORMAT,
+                undefined,
+                `The user ID '${params.user_id}' is not a valid integer.`
+            )
         }
 
         const user = await User.find(params.user_id)
