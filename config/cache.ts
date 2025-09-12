@@ -1,5 +1,8 @@
 import { defineConfig, store, drivers } from "@adonisjs/cache"
 
+/**
+ * The configuration settings for the cache system.
+ */
 const cacheConfig = defineConfig({
     default: "memory",
 
@@ -18,18 +21,6 @@ const cacheConfig = defineConfig({
                 pruneInterval: "24h",
             })
         ),
-
-        /**
-         * Cache using the database.
-         */
-        // database: store().useL2Layer(
-        //     drivers.database({
-        //         connectionName: "main",
-        //         tableName: "cache",
-        //         autoCreateTable: true,
-        //         pruneInterval: "24h",
-        //     })
-        // ),
     },
 })
 

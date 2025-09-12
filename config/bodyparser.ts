@@ -1,5 +1,9 @@
 import { defineConfig } from "@adonisjs/core/bodyparser"
 
+/**
+ * The configuration settings for the bodyparser middleware
+ * to parse incoming HTTP request bodies.
+ */
 const bodyParserConfig = defineConfig({
     /**
      * The bodyparser middleware will parse the request body

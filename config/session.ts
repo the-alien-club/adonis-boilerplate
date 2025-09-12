@@ -1,7 +1,10 @@
 import env from "#start/env"
 import { defineConfig, stores } from "@adonisjs/session"
 
-export default defineConfig({
+/**
+ * The configuration settings for the session management system.
+ */
+const sessionConfig = defineConfig({
     age: "2h",
     enabled: true,
     cookieName: "adonis-session",
@@ -15,8 +18,10 @@ export default defineConfig({
         sameSite: "lax",
     },
 
-    store: (env.get("SESSION_DRIVER") as "cookie" | "memory") || "cookie",
+    store: (env.get("SESSION_DRIVER") as "cookie") ?? "cookie",
     stores: {
         cookie: stores.cookie(),
     },
 })
+
+export default sessionConfig

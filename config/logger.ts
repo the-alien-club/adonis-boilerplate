@@ -6,6 +6,9 @@ import { defineConfig, targets } from "@adonisjs/core/logger"
 let logLevel: "fatal" | "error" | "warn" | "info" | "debug" | "trace" | "silent" = "info"
 if (env.get("NODE_ENV") === "development" || env.get("NODE_ENV") === "test") logLevel = "debug"
 
+/**
+ * The configuration settings for the logger.
+ */
 const loggerConfig = defineConfig({
     default: "app",
 
