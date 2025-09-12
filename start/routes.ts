@@ -2,6 +2,7 @@ import { BaseRole } from "#database/seeders/roles_seeder"
 import { AppErrors } from "#lib/errors"
 import type { FailedRequest } from "#lib/utils/error_handling"
 import { middleware } from "#start/kernel"
+import { authThrottle } from "#start/limiter"
 import router from "@adonisjs/core/services/router"
 
 const AccessTokensController = () => import("#controllers/access_tokens_controller")
@@ -27,19 +28,26 @@ router.get("/status", [GeneralController, "status"])
 // ====================================
 router.get("/openapi", [OpenApiController, "spec"])
 
-// =========================================
-//  Authentication routes (via credentials)
-// =========================================
-router.post("/sign-up", [AuthController, "signUp"])
-router.post("/sign-in", [AuthController, "signIn"])
-router.post("/sign-in/bearer", [AuthController, "signInForBearer"])
+// =======================
+//  Authentication routes
+// =======================
+router
+    .group(() => {
+        router.post("/sign-up", [AuthController, "signUp"])
+        router.post("/sign-in", [AuthController, "signIn"])
+        router.post("/sign-in/bearer", [AuthController, "signInForBearer"])
+        router.get("/is-signed-in", [AuthController, "isSignedIn"])
+        router.post("/sign-out", [AuthController, "signOut"])
+    })
+    .use(authThrottle)
 
 // ==============================================================
 //  Public routes: Accessible without credentials / access token
 // ==============================================================
-router.get("/is-signed-in", [AuthController, "isSignedIn"])
-// TODO: Should off course be highly rate-limited to avoid abuse
-router.get("/users/exists", [UsersController, "exists"])
+// Users
+router.get("/users/exists", [UsersController, "exists"]).use(authThrottle)
+router.get("/users/batch", [UsersController, "showBatch"])
+router.get("/users/:user_id", [UsersController, "show"])
 
 // ==================================================================
 //  Logged-in user routes: Accessible via credentials / access token
@@ -65,15 +73,10 @@ router
 
         // User
         router.get("/users/me", [UsersController, "me"])
-        router.get("/users/batch", [UsersController, "showBatch"])
 
         // Users by ID
-        router.get("/users/:user_id", [UsersController, "show"])
         router.patch("/users/:user_id", [UsersController, "update"])
         router.delete("/users/:user_id", [UsersController, "destroy"])
-
-        // Special route to sign out
-        router.post("/sign-out", [AuthController, "signOut"])
     })
     .use(middleware.auth({ guards: ["api", "session"] }))
 
