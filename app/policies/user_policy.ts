@@ -2,6 +2,7 @@ import { BaseRole } from "#database/seeders/roles_seeder"
 import { AccessTokenAbility, userAccessTokenHasAbility } from "#lib/utils/access_tokens"
 import type User from "#models/user"
 import BasePolicy from "#policies/templates/base_policy"
+import { allowGuest } from "@adonisjs/bouncer"
 import type { AuthorizerResponse } from "@adonisjs/bouncer/types"
 
 export default class UserPolicy extends BasePolicy {
@@ -17,21 +18,18 @@ export default class UserPolicy extends BasePolicy {
         return false
     }
 
-    // Every user can view their own user object or any other user (restricted)
+    // Everyone can view their own user object or any other user (restricted)
+    @allowGuest()
     async show(user: User | null, fetchedUser: User | null): Promise<AuthorizerResponse> {
-        if (userAccessTokenHasAbility(user, AccessTokenAbility.USER_READ)) {
-            if (fetchedUser?.id === user?.id) return true
+        if (fetchedUser?.id === user?.id) return true
+        if (!fetchedUser?.roles) await fetchedUser?.load("roles")
+        if (fetchedUser?.roles.some((role) => role.slug === BaseRole.STEALTH)) return false
 
-            // Stealth check
-            if (!fetchedUser?.roles) await fetchedUser?.load("roles")
-            if (fetchedUser?.roles.some((role) => role.slug === BaseRole.STEALTH)) return false
-            return true
-        }
-
-        return false
+        return true
     }
 
-    // Every user can view their own user object or any other users (restricted)
+    // Everyone can view their own user object or any other users (restricted)
+    @allowGuest()
     async showBatch(user: User | null, fetchedUsers: User[]): Promise<AuthorizerResponse> {
         let hasAccess = true
 
