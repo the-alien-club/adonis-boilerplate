@@ -11,7 +11,7 @@ export default class IndexSeeders extends BaseSeeder {
             (!Seeder.default.environment.includes("testing") && app.inTest) ||
             (!Seeder.default.environment.includes("production") && app.inProduction)
         ) {
-            logger.warn(`Skipping seeder (invalid environment): ${Seeder.default.name}`)
+            logger.warn(`skipping seeder (invalid environment): ${Seeder.default.name}`)
             return
         }
 
