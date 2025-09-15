@@ -39,13 +39,13 @@ router
         router.get("/is-signed-in", [AuthController, "isSignedIn"])
         router.post("/sign-out", [AuthController, "signOut"])
     })
-    .use(authThrottle ?? [])
+    .use(authThrottle)
 
 // ==============================================================
 //  Public routes: Accessible without credentials / access token
 // ==============================================================
 // Users
-router.get("/users/exists", [UsersController, "exists"]).use(authThrottle ?? [])
+router.get("/users/exists", [UsersController, "exists"]).use(authThrottle)
 router.get("/users/batch", [UsersController, "showBatch"])
 router.get("/users/:user_id", [UsersController, "show"])
 
