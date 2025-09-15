@@ -6,8 +6,8 @@ import limiter from "@adonisjs/limiter/services/main"
 // @ts-ignore
 export const authThrottle = limiter.define("auth", (ctx) => {
     if (ctx.auth.user) {
-        return limiter.allowRequests(120).every("1 minute").usingKey(`user_${ctx.auth.user.id}`)
+        return limiter.allowRequests(128).every("1 minute").usingKey(`user_${ctx.auth.user.id}`)
     }
 
-    return limiter.allowRequests(10).every("1 minute").usingKey(`ip_${ctx.request.ip()}`)
+    return limiter.allowRequests(32).every("1 minute").usingKey(`ip_${ctx.request.ip()}`)
 })
