@@ -27,6 +27,7 @@ export default defineConfig({
         () => import("@adonisjs/cache/cache_provider"),
         () => import("@adonisjs/cors/cors_provider"),
         () => import("@adonisjs/lucid/database_provider"),
+        () => import("@adonisjs/limiter/limiter_provider"),
         () => import("@adonisjs/auth/auth_provider"),
         () => import("@adonisjs/bouncer/bouncer_provider"),
         () => import("@adonisjs/core/providers/vinejs_provider"),
