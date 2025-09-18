@@ -1,21 +1,24 @@
-import BaseController from "#controllers/templates/base_controller"
-import { AppErrors } from "#lib/errors"
-import { tryCatchLog, userLog } from "#lib/utils/logger"
-import { AccessTokenScope, AccessTokenScopeAbilities, recoverAccessTokenScope } from "#lib/utils/access_tokens"
-import User from "#models/user"
-import AccessTokenPolicy from "#policies/access_token_policy"
 import type { AccessToken } from "@adonisjs/auth/access_tokens"
 import type { HttpContext } from "@adonisjs/core/http"
 import logger from "@adonisjs/core/services/logger"
-
-import { accessTokenCreationValidator, accessTokenUpdateValidator } from "#validators/access_token_validator"
+import BaseController from "#controllers/templates/base_controller"
+import { AppErrors } from "#lib/errors"
+import { AccessTokenScope, AccessTokenScopeAbilities, recoverAccessTokenScope } from "#lib/utils/access_tokens"
+import { tryCatchLog, userLog } from "#lib/utils/logger"
 import { isValidIntId } from "#lib/utils/miscellaneous"
+import User from "#models/user"
+import AccessTokenPolicy from "#policies/access_token_policy"
+import {
+    accessTokenCreationValidator,
+    accessTokenIndexingValidator,
+    accessTokenUpdateValidator,
+} from "#validators/access_token_validator"
 
 export default class AccessTokensController extends BaseController {
     /**
      * Get all user's access tokens.
      */
-    async index({ auth, bouncer, params }: HttpContext) {
+    async index({ auth, bouncer, request, params }: HttpContext) {
         let user: User | null = auth.user as User
         if (params.user_id) {
             if (!isValidIntId(params.user_id)) {
@@ -41,6 +44,14 @@ export default class AccessTokensController extends BaseController {
         }
 
         const accessTokens = await User.accessTokens.all(user)
+
+        const { prefix } = await request.validateUsing(accessTokenIndexingValidator)
+        if (prefix) {
+            return this.successResponse<AccessToken[]>(
+                accessTokens.filter((accessToken) => accessToken.name?.startsWith(prefix))
+            )
+        }
+
         return this.successResponse<AccessToken[]>(accessTokens)
     }
 
@@ -80,7 +91,7 @@ export default class AccessTokensController extends BaseController {
      * Issue a new access token.
      */
     async store({ auth, bouncer, request, params }: HttpContext) {
-        const { scope, expiresIn } = await request.validateUsing(accessTokenCreationValidator)
+        const { prefix, name, scope, expiresIn } = await request.validateUsing(accessTokenCreationValidator)
 
         let user: User | null = auth.user as User
         if (params.user_id) {
@@ -118,10 +129,12 @@ export default class AccessTokensController extends BaseController {
                 user,
                 AccessTokenScopeAbilities[(scope as AccessTokenScope) || AccessTokenScope.UNRESTRICTED],
                 {
-                    name:
-                        user.id === auth.user?.id
+                    name: `${prefix ? `${prefix}: ` : ""}${
+                        name ??
+                        (user.id === auth.user?.id
                             ? `Token issued manually (${scope}).`
-                            : `Token issued by an administrator (${scope}).`,
+                            : `Token issued by an administrator (${scope}).`)
+                    }`,
                     expiresIn: expiresIn || undefined,
                 }
             )
