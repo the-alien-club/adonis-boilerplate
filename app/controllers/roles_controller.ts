@@ -104,7 +104,7 @@ export default class RolesController extends BaseController {
     }
 
     /**
-     * Get a list of roles per IDs or per slug.
+     * Get a list of roles by their IDs or slugs.
      */
     async showBatch({ auth, bouncer, request }: HttpContext) {
         const { ids, slugs } = await request.validateUsing(rolesShowBatchValidator)
