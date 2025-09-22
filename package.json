@@ -39,6 +39,7 @@
         "v-bump": "yarn version --patch",
         "migration:fresh": "cross-env NO_LC=true node ace migration:refresh --seed",
         "migration:run": "cross-env NO_LC=true node ace migration:run",
+        "migration:rollback": "cross-env NO_LC=true node ace migration:rollback",
         "db:wipe": "cross-env NO_LC=true node ace db:wipe",
         "db:seed": "cross-env NO_LC=true node ace db:seed",
         "generate:key": "cross-env NO_LC=true node ace generate:key",
