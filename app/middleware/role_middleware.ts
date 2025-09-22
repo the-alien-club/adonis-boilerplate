@@ -1,9 +1,9 @@
+import type { HttpContext } from "@adonisjs/core/http"
+import type { NextFn } from "@adonisjs/core/types/http"
 import { BaseRole } from "#database/seeders/roles_seeder"
 import { AppErrors } from "#lib/errors"
 import { getUserRoles } from "#lib/utils/roles"
 import type Role from "#models/role"
-import type { HttpContext } from "@adonisjs/core/http"
-import type { NextFn } from "@adonisjs/core/types/http"
 
 /**
  * The role middleware is used to check if the user has the required role to access
@@ -20,16 +20,16 @@ export default class RoleMiddleware {
             role: Role["slug"]
         } = { role: BaseRole.ADMIN }
     ) {
-        if (!ctx.auth.isAuthenticated) {
-            return ctx.response.forbidden({
+        if (!ctx.auth.user || !ctx.auth.isAuthenticated) {
+            return ctx.response.unauthorized({
                 success: false,
                 message: "You are not authorized to access this resource.",
                 error: AppErrors.UNAUTHORIZED,
             })
         }
 
-        if (!ctx.auth.user || (ctx.auth.user && ctx.auth.user.isLocked === true)) {
-            return ctx.response.forbidden({
+        if (ctx.auth.user.isLocked === true) {
+            return ctx.response.unauthorized({
                 success: false,
                 message: "Your account is locked. Please contact an administrator.",
                 error: AppErrors.LOCKED,
@@ -38,7 +38,7 @@ export default class RoleMiddleware {
 
         const userRoles = (await getUserRoles(ctx.auth.user)) || []
         if (!userRoles.includes(options.role)) {
-            return ctx.response.forbidden({
+            return ctx.response.unauthorized({
                 success: false,
                 message: "You are not authorized to access this resource.",
                 error: AppErrors.UNAUTHORIZED,
