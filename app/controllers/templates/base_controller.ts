@@ -20,7 +20,7 @@ export type IndexedRequestQueryOptionsInput = Infer<typeof getIndexedRequestQuer
 /**
  * The type for the parsed query options that can be applied to the indexation methods.
  */
-export type IndexedRequestQueryOptions = Infer<typeof getIndexedRequestQueryOptionsValidator>
+export type IndexedRequestQueryOptions = Required<Infer<typeof getIndexedRequestQueryOptionsValidator>>
 
 /**
  * The type for the input query options that can be applied to period-based methods.
@@ -107,11 +107,11 @@ export default class BaseController {
     /**
      * Get the query options or their default values that can be applied to the indexation methods.
      * @param request The HTTP context request.
-     * @returns The options object (pagination & sorting).
+     * @returns The result object (pagination & sorting).
      */
     protected async getIndexedRequestQueryOptions(
         request: HttpContext["request"]
-    ): Promise<Required<IndexedRequestQueryOptions>> {
+    ): Promise<IndexedRequestQueryOptions> {
         const {
             page = 1,
             limit = 10,
@@ -123,9 +123,9 @@ export default class BaseController {
     }
 
     /**
-     * Get the query options or their default values that can be applied to period-based methods.
+     * Get the query options that can be applied to period-based methods.
      * @param request The HTTP context request.
-     * @returns The options object (period, start date, end date & `dateTrunc`).
+     * @returns The result object (period, start date, end date & `dateTrunc`).
      */
     protected async getPeriodRequestQueryOptions(request: HttpContext["request"]): Promise<PeriodRequestQueryOptions> {
         const { period, start, end } = await request.validateUsing(getPeriodRequestQueryOptionsValidator)
