@@ -1,0 +1,48 @@
+import type { HttpContext } from "@adonisjs/core/http"
+import type { NextFn } from "@adonisjs/core/types/http"
+import type { Authenticators } from "@adonisjs/auth/types"
+import logger from "@adonisjs/core/services/logger"
+import { userLog } from "#lib/utils/logger"
+import { AppErrors } from "#lib/errors"
+import USER_CONSTANTS from "#lib/constants/users"
+import { DateTime } from "luxon"
+
+/**
+ * Silent auth middleware is used authenticate HTTP requests and continue
+ * processing even if the user is unauthenticated. This is useful for routes
+ * that can be accessed by both authenticated and unauthenticated users.
+ * @param guards The guards to use for authentication (optional).
+ */
+export default class AuthMiddleware {
+    async handle(
+        ctx: HttpContext,
+        next: NextFn,
+        options: {
+            guards?: (keyof Authenticators)[]
+        } = {}
+    ) {
+        try {
+            await ctx.auth.authenticateUsing(options.guards, { loginRoute: USER_CONSTANTS.SIGN_IN_REDIRECT })
+        } catch (_) {
+            return next()
+        }
+
+        if (!ctx.auth.user) return next()
+
+        if (ctx.auth.user && ctx.auth.user.isLocked === true) {
+            logger.info(userLog(ctx.auth.user, "tried to interact with the API but their account is locked"))
+
+            return ctx.response.unauthorized({
+                success: false,
+                message: "Your account is locked. Please contact an administrator.",
+                error: AppErrors.LOCKED,
+            })
+        }
+
+        // Update the last login time
+        ctx.auth.user.lastLoginAt = DateTime.now()
+        await ctx.auth.user.save()
+
+        return next()
+    }
+}
