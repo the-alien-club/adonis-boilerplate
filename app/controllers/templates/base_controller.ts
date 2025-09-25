@@ -1,18 +1,43 @@
-import type { SuccessfulRequest, ErrorObj, FailedRequest } from "#lib/utils/error_handling"
 import type { IndexedRequestMeta } from "#types/adonis"
 import { inject } from "@adonisjs/core"
+import {
+    getIndexedRequestQueryOptionsValidator,
+    getPeriodRequestQueryOptionsValidator,
+    PeriodOption,
+} from "#validators/base_controller_validator"
+import type { Infer } from "@vinejs/vine/types"
+
 // Warning: Adding "type" to this import will BREAK the injection system.
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { HttpContext } from "@adonisjs/core/http"
+import type { SuccessfulRequest, ErrorObj, FailedRequest } from "#lib/utils/error_handling"
 
 /**
- * The type for query options that can be applied to the indexation methods.
+ * The type for the input query options that can be applied to the indexation methods.
  */
-export type IndexedRequestQueryOptions = {
-    page: number
-    limit: number
-    orderBy: string
-    direction: "asc" | "desc"
+export type IndexedRequestQueryOptionsInput = Infer<typeof getIndexedRequestQueryOptionsValidator>
+
+/**
+ * The type for the parsed query options that can be applied to the indexation methods.
+ */
+export type IndexedRequestQueryOptions = Infer<typeof getIndexedRequestQueryOptionsValidator>
+
+/**
+ * The type for the input query options that can be applied to period-based methods.
+ */
+export type PeriodRequestQueryOptionsInput = Omit<
+    Infer<typeof getPeriodRequestQueryOptionsValidator>,
+    "start" | "end"
+> & {
+    start: string // ISO date string
+    end: string // ISO date string
+}
+
+/**
+ * The type for the parsed query options that can be applied to period-based methods.
+ */
+export type PeriodRequestQueryOptions = Infer<typeof getPeriodRequestQueryOptionsValidator> & {
+    dateTrunc: string // Period converted into an SQL "DATE_TRUNC" compatible string
 }
 
 @inject()
@@ -81,15 +106,46 @@ export default class BaseController {
 
     /**
      * Get the query options or their default values that can be applied to the indexation methods.
-     * @param queries The request queries record.
+     * @param request The HTTP context request.
      * @returns The options object (pagination & sorting).
      */
-    protected getQueryOptions(queries: Record<string, any>): IndexedRequestQueryOptions {
-        const page = queries.page ? Number(queries.page) : 1
-        const limit = queries.limit ? Number(queries.limit) : 10
-        const orderBy = queries.orderBy ? queries.orderBy : "created_at"
-        const direction = queries.direction ? queries.direction : "desc"
+    protected async getIndexedRequestQueryOptions(
+        request: HttpContext["request"]
+    ): Promise<Required<IndexedRequestQueryOptions>> {
+        const {
+            page = 1,
+            limit = 10,
+            orderBy = "created_at",
+            direction = "desc",
+        } = await request.validateUsing(getIndexedRequestQueryOptionsValidator)
 
         return { page, limit, orderBy, direction }
+    }
+
+    /**
+     * Get the query options or their default values that can be applied to period-based methods.
+     * @param request The HTTP context request.
+     * @returns The options object (period, start date, end date & `dateTrunc`).
+     */
+    protected async getPeriodRequestQueryOptions(request: HttpContext["request"]): Promise<PeriodRequestQueryOptions> {
+        const { period, start, end } = await request.validateUsing(getPeriodRequestQueryOptionsValidator)
+
+        let dateTrunc: string
+        switch (period) {
+            case PeriodOption.LIVE:
+                dateTrunc = "DATE_TRUNC('minute', created_at)" // By minute
+                break
+            case PeriodOption.DAILY:
+                dateTrunc = "DATE_TRUNC('hour', created_at)" // By hour
+                break
+            case PeriodOption.WEEKLY:
+                dateTrunc = "DATE_TRUNC('week', created_at)" // By week
+                break
+            case PeriodOption.MONTHLY:
+                dateTrunc = "DATE_TRUNC('month', created_at)" // By month
+                break
+        }
+
+        return { period, start, end, dateTrunc }
     }
 }

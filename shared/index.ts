@@ -1,6 +1,12 @@
-import type { IndexedRequestQueryOptions } from "#controllers/templates/base_controller"
+import type {
+    IndexedRequestQueryOptions,
+    IndexedRequestQueryOptionsInput,
+    PeriodRequestQueryOptions,
+    PeriodRequestQueryOptionsInput,
+} from "#controllers/templates/base_controller"
 import type User from "#models/user"
 import type { IndexedRequestMeta, ReadAttributes } from "#types/adonis"
+import type { PeriodOption } from "#validators/base_controller_validator"
 import type { BaseModel } from "@adonisjs/lucid/orm"
 import type { LucidModel, LucidRow, ModelAttributes } from "@adonisjs/lucid/types/model"
 
@@ -61,5 +67,9 @@ export type {
 
     // Miscellaneous
     IndexedRequestMeta,
+    IndexedRequestQueryOptionsInput,
     IndexedRequestQueryOptions,
+    PeriodRequestQueryOptionsInput,
+    PeriodRequestQueryOptions,
+    PeriodOption,
 }
