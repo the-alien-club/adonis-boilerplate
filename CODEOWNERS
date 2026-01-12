@@ -1,0 +1,9 @@
+# CODEOWNERS - Code Ownership and Review Requirements
+#
+# This file defines who is responsible for code in this repository.
+# For ISO 27001 compliance, all changes require approval from at least one code owner.
+#
+# Documentation: https://docs.gitlab.com/ee/user/project/codeowners/
+
+# Default owners for all files
+* @alias3
